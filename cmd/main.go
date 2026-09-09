@@ -21,7 +21,7 @@ func main() {
 	// Load config
 	cfg, err := config.LoadConfig()
 	if err != nil {
-		slog.Error("failed to load config: %v", err)
+		slog.Error("failed to load config", slog.Any("error", err))
 		os.Exit(1)
 	}
 
