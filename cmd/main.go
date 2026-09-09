@@ -17,6 +17,13 @@ import (
 	"github.com/dmi3midd/simple-schedule/internal/service"
 )
 
+// @title           Simple Schedule API
+// @version         1.0
+// @description     Simple Schedule REST API service for managing activities and scheduling slots.
+// @host            localhost:2811
+// @BasePath        /
+// @schemes         http https
+
 func main() {
 	// Root context with signal cancellation for graceful shutdown
 	ctx, stop := signal.NotifyContext(context.Background(), os.Interrupt, syscall.SIGTERM)

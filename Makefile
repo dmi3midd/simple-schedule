@@ -8,9 +8,14 @@ build:
 	@echo "Building..."
 	@go build -o main ./cmd
 
+# Generate swagger documentation
+swagger:
+	@echo "Generating Swagger documentation..."
+	@swag init -g cmd/main.go -o ./docs
+
 # Clean up build artifacts
 clean:
 	@echo "Cleaning up..."
 	@rm -f main
 
-.PHONY: run build clean
+.PHONY: run build swagger clean

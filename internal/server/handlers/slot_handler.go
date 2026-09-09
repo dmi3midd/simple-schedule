@@ -13,17 +13,17 @@ import (
 )
 
 type CreateSlotRequest struct {
-	ActivityID string `json:"activity_id" validate:"required"`
-	Day        string `json:"day" validate:"required,min=1"`
-	StartTime  string `json:"start_time" validate:"required"`
-	Duration   string `json:"duration" validate:"required"`
+	ActivityID string `json:"activity_id" validate:"required" example:"d40c6c2b-e48f-4cb1-80a5-f8c5b6b801a2"`
+	Day        string `json:"day" validate:"required,min=1" example:"Monday"`
+	StartTime  string `json:"start_time" validate:"required" example:"09:00"`
+	Duration   string `json:"duration" validate:"required" example:"1h30m"`
 }
 
 type UpdateSlotRequest struct {
-	ActivityID string `json:"activity_id" validate:"required"`
-	Day        string `json:"day" validate:"required,min=1"`
-	StartTime  string `json:"start_time" validate:"required"`
-	Duration   string `json:"duration" validate:"required"`
+	ActivityID string `json:"activity_id" validate:"required" example:"d40c6c2b-e48f-4cb1-80a5-f8c5b6b801a2"`
+	Day        string `json:"day" validate:"required,min=1" example:"Tuesday"`
+	StartTime  string `json:"start_time" validate:"required" example:"10:00"`
+	Duration   string `json:"duration" validate:"required" example:"2h"`
 }
 
 type SlotHandler struct {
@@ -47,6 +47,17 @@ func (h *SlotHandler) RegisterRoutes(mux *http.ServeMux) {
 	mux.HandleFunc("DELETE /slots", apierror.ErrorHandler(h.DeleteAll))
 }
 
+// Create creates a new slot.
+// @Summary      Create a slot
+// @Description  Create a new schedule slot linked to an activity
+// @Tags         slots
+// @Accept       json
+// @Produce      json
+// @Param        request  body      CreateSlotRequest  true  "Slot creation payload"
+// @Success      201      {object}  IDResponse
+// @Failure      400      {object}  apierror.UserError
+// @Failure      500      {object}  apierror.UserError
+// @Router       /slots [post]
 func (h *SlotHandler) Create(w http.ResponseWriter, r *http.Request) error {
 	req, err := httputils.BindAndValidate[CreateSlotRequest](r, h.validate)
 	if err != nil {
@@ -63,9 +74,20 @@ func (h *SlotHandler) Create(w http.ResponseWriter, r *http.Request) error {
 		return err
 	}
 
-	return httputils.WriteJSON(w, http.StatusCreated, struct{ ID string }{ID: id})
+	return httputils.WriteJSON(w, http.StatusCreated, IDResponse{ID: id})
 }
 
+// Get retrieves a slot by ID.
+// @Summary      Get slot by ID
+// @Description  Retrieve single schedule slot by its unique identifier
+// @Tags         slots
+// @Produce      json
+// @Param        id   path      string  true  "Slot ID" example("f8a29b20-c23d-4299-8255-ec4319fb7914")
+// @Success      200  {object}  domain.Slot
+// @Failure      400  {object}  apierror.UserError
+// @Failure      404  {object}  apierror.UserError
+// @Failure      500  {object}  apierror.UserError
+// @Router       /slots/{id} [get]
 func (h *SlotHandler) Get(w http.ResponseWriter, r *http.Request) error {
 	id := r.PathValue("id")
 	if id == "" {
@@ -80,6 +102,15 @@ func (h *SlotHandler) Get(w http.ResponseWriter, r *http.Request) error {
 	return httputils.WriteJSON(w, http.StatusOK, slot)
 }
 
+// List retrieves all slots or filters by activity_id.
+// @Summary      List slots
+// @Description  Retrieve all schedule slots, optionally filtered by activity_id query parameter
+// @Tags         slots
+// @Produce      json
+// @Param        activity_id  query     string  false  "Filter by Activity ID" example("d40c6c2b-e48f-4cb1-80a5-f8c5b6b801a2")
+// @Success      200          {array}   domain.Slot
+// @Failure      500          {object}  apierror.UserError
+// @Router       /slots [get]
 func (h *SlotHandler) List(w http.ResponseWriter, r *http.Request) error {
 	activityID := r.URL.Query().Get("activity_id")
 
@@ -97,6 +128,19 @@ func (h *SlotHandler) List(w http.ResponseWriter, r *http.Request) error {
 	return httputils.WriteJSON(w, http.StatusOK, slots)
 }
 
+// Update updates an existing slot by ID.
+// @Summary      Update slot
+// @Description  Update details of an existing schedule slot
+// @Tags         slots
+// @Accept       json
+// @Produce      json
+// @Param        id       path      string             true  "Slot ID" example("f8a29b20-c23d-4299-8255-ec4319fb7914")
+// @Param        request  body      UpdateSlotRequest  true  "Slot update payload"
+// @Success      200      {object}  IDResponse
+// @Failure      400      {object}  apierror.UserError
+// @Failure      404      {object}  apierror.UserError
+// @Failure      500      {object}  apierror.UserError
+// @Router       /slots/{id} [put]
 func (h *SlotHandler) Update(w http.ResponseWriter, r *http.Request) error {
 	id := r.PathValue("id")
 	if id == "" {
@@ -118,9 +162,19 @@ func (h *SlotHandler) Update(w http.ResponseWriter, r *http.Request) error {
 		return err
 	}
 
-	return httputils.WriteJSON(w, http.StatusOK, struct{ ID string }{ID: id})
+	return httputils.WriteJSON(w, http.StatusOK, IDResponse{ID: id})
 }
 
+// Delete deletes a slot by ID.
+// @Summary      Delete slot
+// @Description  Delete a schedule slot by its ID
+// @Tags         slots
+// @Param        id   path      string  true  "Slot ID" example("f8a29b20-c23d-4299-8255-ec4319fb7914")
+// @Success      204  "No Content"
+// @Failure      400  {object}  apierror.UserError
+// @Failure      404  {object}  apierror.UserError
+// @Failure      500  {object}  apierror.UserError
+// @Router       /slots/{id} [delete]
 func (h *SlotHandler) Delete(w http.ResponseWriter, r *http.Request) error {
 	id := r.PathValue("id")
 	if id == "" {
@@ -135,6 +189,13 @@ func (h *SlotHandler) Delete(w http.ResponseWriter, r *http.Request) error {
 	return nil
 }
 
+// DeleteAll deletes all slots.
+// @Summary      Delete all slots
+// @Description  Delete all schedule slots
+// @Tags         slots
+// @Success      204  "No Content"
+// @Failure      500  {object}  apierror.UserError
+// @Router       /slots [delete]
 func (h *SlotHandler) DeleteAll(w http.ResponseWriter, r *http.Request) error {
 	if err := h.service.DeleteAll(r.Context()); err != nil {
 		return err

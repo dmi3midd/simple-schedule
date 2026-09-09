@@ -1,0 +1,443 @@
+basePath: /
+definitions:
+  apierror.UserError:
+    properties:
+      code:
+        type: integer
+      message:
+        type: string
+      timestamp:
+        type: string
+    type: object
+  domain.Activity:
+    properties:
+      createdAt:
+        type: string
+      id:
+        type: string
+      title:
+        type: string
+      updatedAt:
+        type: string
+    type: object
+  domain.Slot:
+    properties:
+      activity_id:
+        type: string
+      createdAt:
+        type: string
+      day:
+        type: string
+      duration:
+        type: string
+      id:
+        type: string
+      start_time:
+        type: string
+      updatedAt:
+        type: string
+    type: object
+  handlers.CreateActivityRequest:
+    properties:
+      title:
+        example: Gym Workout
+        maxLength: 255
+        minLength: 1
+        type: string
+    required:
+    - title
+    type: object
+  handlers.CreateSlotRequest:
+    properties:
+      activity_id:
+        example: d40c6c2b-e48f-4cb1-80a5-f8c5b6b801a2
+        type: string
+      day:
+        example: Monday
+        minLength: 1
+        type: string
+      duration:
+        example: 1h30m
+        type: string
+      start_time:
+        example: "09:00"
+        type: string
+    required:
+    - activity_id
+    - day
+    - duration
+    - start_time
+    type: object
+  handlers.IDResponse:
+    properties:
+      id:
+        example: 97ec8552-9562-4d79-ab4c-1ca959663629
+        type: string
+    type: object
+  handlers.UpdateActivityRequest:
+    properties:
+      title:
+        example: Evening Run
+        maxLength: 255
+        minLength: 1
+        type: string
+    required:
+    - title
+    type: object
+  handlers.UpdateSlotRequest:
+    properties:
+      activity_id:
+        example: d40c6c2b-e48f-4cb1-80a5-f8c5b6b801a2
+        type: string
+      day:
+        example: Tuesday
+        minLength: 1
+        type: string
+      duration:
+        example: 2h
+        type: string
+      start_time:
+        example: "10:00"
+        type: string
+    required:
+    - activity_id
+    - day
+    - duration
+    - start_time
+    type: object
+host: localhost:2811
+info:
+  contact: {}
+  description: Simple Schedule REST API service for managing activities and scheduling
+    slots.
+  title: Simple Schedule API
+  version: "1.0"
+paths:
+  /activities:
+    delete:
+      description: Delete all activities and cascade delete all slots
+      responses:
+        "204":
+          description: No Content
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/apierror.UserError'
+      summary: Delete all activities
+      tags:
+      - activities
+    get:
+      description: Retrieve all created activities
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/domain.Activity'
+            type: array
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/apierror.UserError'
+      summary: List activities
+      tags:
+      - activities
+    post:
+      consumes:
+      - application/json
+      description: Create a new activity with a given title
+      parameters:
+      - description: Activity creation payload
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/handlers.CreateActivityRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/handlers.IDResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/apierror.UserError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/apierror.UserError'
+      summary: Create an activity
+      tags:
+      - activities
+  /activities/{id}:
+    delete:
+      description: Delete an activity by its ID and cascade delete all associated
+        slots
+      parameters:
+      - description: Activity ID
+        example: '"d40c6c2b-e48f-4cb1-80a5-f8c5b6b801a2"'
+        in: path
+        name: id
+        required: true
+        type: string
+      responses:
+        "204":
+          description: No Content
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/apierror.UserError'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/apierror.UserError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/apierror.UserError'
+      summary: Delete activity
+      tags:
+      - activities
+    get:
+      description: Retrieve single activity by its unique identifier
+      parameters:
+      - description: Activity ID
+        example: '"d40c6c2b-e48f-4cb1-80a5-f8c5b6b801a2"'
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/domain.Activity'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/apierror.UserError'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/apierror.UserError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/apierror.UserError'
+      summary: Get activity by ID
+      tags:
+      - activities
+    put:
+      consumes:
+      - application/json
+      description: Update title of an activity by its ID
+      parameters:
+      - description: Activity ID
+        example: '"d40c6c2b-e48f-4cb1-80a5-f8c5b6b801a2"'
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Activity update payload
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/handlers.UpdateActivityRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/handlers.IDResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/apierror.UserError'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/apierror.UserError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/apierror.UserError'
+      summary: Update activity
+      tags:
+      - activities
+  /slots:
+    delete:
+      description: Delete all schedule slots
+      responses:
+        "204":
+          description: No Content
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/apierror.UserError'
+      summary: Delete all slots
+      tags:
+      - slots
+    get:
+      description: Retrieve all schedule slots, optionally filtered by activity_id
+        query parameter
+      parameters:
+      - description: Filter by Activity ID
+        example: '"d40c6c2b-e48f-4cb1-80a5-f8c5b6b801a2"'
+        in: query
+        name: activity_id
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/domain.Slot'
+            type: array
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/apierror.UserError'
+      summary: List slots
+      tags:
+      - slots
+    post:
+      consumes:
+      - application/json
+      description: Create a new schedule slot linked to an activity
+      parameters:
+      - description: Slot creation payload
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/handlers.CreateSlotRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/handlers.IDResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/apierror.UserError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/apierror.UserError'
+      summary: Create a slot
+      tags:
+      - slots
+  /slots/{id}:
+    delete:
+      description: Delete a schedule slot by its ID
+      parameters:
+      - description: Slot ID
+        example: '"f8a29b20-c23d-4299-8255-ec4319fb7914"'
+        in: path
+        name: id
+        required: true
+        type: string
+      responses:
+        "204":
+          description: No Content
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/apierror.UserError'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/apierror.UserError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/apierror.UserError'
+      summary: Delete slot
+      tags:
+      - slots
+    get:
+      description: Retrieve single schedule slot by its unique identifier
+      parameters:
+      - description: Slot ID
+        example: '"f8a29b20-c23d-4299-8255-ec4319fb7914"'
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/domain.Slot'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/apierror.UserError'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/apierror.UserError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/apierror.UserError'
+      summary: Get slot by ID
+      tags:
+      - slots
+    put:
+      consumes:
+      - application/json
+      description: Update details of an existing schedule slot
+      parameters:
+      - description: Slot ID
+        example: '"f8a29b20-c23d-4299-8255-ec4319fb7914"'
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Slot update payload
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/handlers.UpdateSlotRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/handlers.IDResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/apierror.UserError'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/apierror.UserError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/apierror.UserError'
+      summary: Update slot
+      tags:
+      - slots
+schemes:
+- http
+- https
+swagger: "2.0"

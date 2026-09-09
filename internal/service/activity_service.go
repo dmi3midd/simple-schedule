@@ -144,6 +144,7 @@ func (s *activityService) DeleteAll(ctx context.Context) error {
 		if s.cascadeDeleter != nil {
 			_ = s.cascadeDeleter.DeleteByActivityID(ctx, id)
 		}
+		delete(s.repo, id)
 	}
 
 	return nil
