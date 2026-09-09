@@ -5,6 +5,8 @@ go 1.26.5
 require (
 	github.com/go-playground/validator/v10 v10.30.4
 	github.com/google/uuid v1.6.0
+	github.com/swaggo/http-swagger/v2 v2.0.2
+	github.com/swaggo/swag v1.16.6
 	go.yaml.in/yaml/v3 v3.0.5
 )
 
@@ -22,8 +24,6 @@ require (
 	github.com/mailru/easyjson v0.7.6 // indirect
 	github.com/stretchr/testify v1.12.1 // indirect
 	github.com/swaggo/files/v2 v2.0.0 // indirect
-	github.com/swaggo/http-swagger/v2 v2.0.2 // indirect
-	github.com/swaggo/swag v1.16.6 // indirect
 	golang.org/x/crypto v0.55.0 // indirect
 	golang.org/x/mod v0.38.0 // indirect
 	golang.org/x/sync v0.22.0 // indirect
