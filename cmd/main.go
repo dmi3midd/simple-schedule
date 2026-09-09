@@ -9,12 +9,8 @@ import (
 	"os/signal"
 	"syscall"
 
-	"github.com/go-playground/validator/v10"
-
 	"github.com/dmi3midd/simple-schedule/internal/config"
 	"github.com/dmi3midd/simple-schedule/internal/server"
-	"github.com/dmi3midd/simple-schedule/internal/server/handlers"
-	"github.com/dmi3midd/simple-schedule/internal/service"
 )
 
 // @title           Simple Schedule API
@@ -36,21 +32,9 @@ func main() {
 		os.Exit(1)
 	}
 
-	// Initialize services
-	activityService := service.NewActivityService()
-	slotService := service.NewSlotService(activityService)
-	activityService.SetSlotCascadeDeleter(slotService)
-
-	// Initialize validator and handlers
-	validate := validator.New()
-	activityHandler := handlers.NewActivityHandler(activityService, validate)
-	slotHandler := handlers.NewSlotHandler(slotService, validate)
-
 	// Create and start server
 	server := server.NewServer(
 		&cfg.Server,
-		activityHandler,
-		slotHandler,
 	)
 	slog.Info(
 		"server is running",

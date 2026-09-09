@@ -2,18 +2,9 @@ package apierror
 
 import (
 	"errors"
-
-	"github.com/dmi3midd/simple-schedule/internal/service"
 )
 
-var ErrorMap = map[error]func(err error) error{
-	service.ErrActivityNotFound: func(err error) error {
-		return NewNotFoundError(err, "Activity not found")
-	},
-	service.ErrSlotNotFound: func(err error) error {
-		return NewNotFoundError(err, "Slot not found")
-	},
-}
+var ErrorMap = map[error]func(err error) error{}
 
 func MapError(err error) error {
 	if err == nil {
