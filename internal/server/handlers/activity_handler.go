@@ -52,7 +52,7 @@ func (h *ActivityHandler) Create(w http.ResponseWriter, r *http.Request) error {
 		return err
 	}
 
-	return httputils.WriteJSON(w, http.StatusCreated, map[string]string{"id": id})
+	return httputils.WriteJSON(w, http.StatusCreated, struct{ ID string }{ID: id})
 }
 
 func (h *ActivityHandler) Get(w http.ResponseWriter, r *http.Request) error {
@@ -94,7 +94,7 @@ func (h *ActivityHandler) Update(w http.ResponseWriter, r *http.Request) error {
 		return err
 	}
 
-	return httputils.WriteJSON(w, http.StatusOK, map[string]string{"id": id})
+	return httputils.WriteJSON(w, http.StatusOK, struct{ ID string }{ID: id})
 }
 
 func (h *ActivityHandler) Delete(w http.ResponseWriter, r *http.Request) error {
@@ -116,6 +116,5 @@ func (h *ActivityHandler) DeleteAll(w http.ResponseWriter, r *http.Request) erro
 		return err
 	}
 
-	w.WriteHeader(http.StatusNoContent)
-	return nil
+	return httputils.WriteJSON(w, http.StatusNoContent, nil)
 }

@@ -63,7 +63,7 @@ func (h *SlotHandler) Create(w http.ResponseWriter, r *http.Request) error {
 		return err
 	}
 
-	return httputils.WriteJSON(w, http.StatusCreated, map[string]string{"id": id})
+	return httputils.WriteJSON(w, http.StatusCreated, struct{ ID string }{ID: id})
 }
 
 func (h *SlotHandler) Get(w http.ResponseWriter, r *http.Request) error {
@@ -118,7 +118,7 @@ func (h *SlotHandler) Update(w http.ResponseWriter, r *http.Request) error {
 		return err
 	}
 
-	return httputils.WriteJSON(w, http.StatusOK, map[string]string{"id": id})
+	return httputils.WriteJSON(w, http.StatusOK, struct{ ID string }{ID: id})
 }
 
 func (h *SlotHandler) Delete(w http.ResponseWriter, r *http.Request) error {
