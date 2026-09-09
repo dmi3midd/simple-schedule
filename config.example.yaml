@@ -1,0 +1,5 @@
+server:
+  address: 0.0.0.0:2811
+  idleTimeout: 90s
+  readTimeout: 10s
+  writeTimeout: 15s
