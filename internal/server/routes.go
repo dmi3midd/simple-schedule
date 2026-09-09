@@ -1,11 +1,12 @@
 package server
 
-import "net/http"
+import (
+	"net/http"
+)
 
 func (s *Server) RegisterRoutes() http.Handler {
 	mux := http.NewServeMux()
-	mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		w.Write([]byte("Hello, World!"))
-	})
+	s.activityHandler.RegisterRoutes(mux)
+	s.slotHandler.RegisterRoutes(mux)
 	return mux
 }
