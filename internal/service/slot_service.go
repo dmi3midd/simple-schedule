@@ -37,6 +37,7 @@ type SlotService interface {
 	Create(ctx context.Context, input CreateSlotInput) (string, error)
 	Update(ctx context.Context, id string, input UpdateSlotInput) (string, error)
 	Delete(ctx context.Context, id string) error
+	DeleteAll(ctx context.Context) error
 	DeleteByActivityID(ctx context.Context, activityID string) error
 }
 
@@ -161,6 +162,15 @@ func (s *slotService) Delete(ctx context.Context, id string) error {
 	}
 
 	delete(s.repo, id)
+	return nil
+}
+
+func (s *slotService) DeleteAll(ctx context.Context) error {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+
+	s.repo = make(map[string]domain.Slot, 32)
+
 	return nil
 }
 

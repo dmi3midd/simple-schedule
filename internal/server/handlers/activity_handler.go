@@ -38,6 +38,7 @@ func (h *ActivityHandler) RegisterRoutes(mux *http.ServeMux) {
 	mux.HandleFunc("GET /activities/{id}", apierror.ErrorHandler(h.Get))
 	mux.HandleFunc("PUT /activities/{id}", apierror.ErrorHandler(h.Update))
 	mux.HandleFunc("DELETE /activities/{id}", apierror.ErrorHandler(h.Delete))
+	mux.HandleFunc("DELETE /activities", apierror.ErrorHandler(h.DeleteAll))
 }
 
 func (h *ActivityHandler) Create(w http.ResponseWriter, r *http.Request) error {
@@ -103,6 +104,15 @@ func (h *ActivityHandler) Delete(w http.ResponseWriter, r *http.Request) error {
 	}
 
 	if err := h.service.Delete(r.Context(), id); err != nil {
+		return err
+	}
+
+	w.WriteHeader(http.StatusNoContent)
+	return nil
+}
+
+func (h *ActivityHandler) DeleteAll(w http.ResponseWriter, r *http.Request) error {
+	if err := h.service.DeleteAll(r.Context()); err != nil {
 		return err
 	}
 

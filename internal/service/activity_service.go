@@ -22,6 +22,7 @@ type ActivityService interface {
 	Create(ctx context.Context, title string) (string, error)
 	Update(ctx context.Context, id string, title string) (string, error)
 	Delete(ctx context.Context, id string) error
+	DeleteAll(ctx context.Context) error
 	SetSlotCascadeDeleter(deleter SlotCascadeDeleter)
 }
 
@@ -130,6 +131,19 @@ func (s *activityService) Delete(ctx context.Context, id string) error {
 
 	if s.cascadeDeleter != nil {
 		_ = s.cascadeDeleter.DeleteByActivityID(ctx, id)
+	}
+
+	return nil
+}
+
+func (s *activityService) DeleteAll(ctx context.Context) error {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+
+	for id := range s.repo {
+		if s.cascadeDeleter != nil {
+			_ = s.cascadeDeleter.DeleteByActivityID(ctx, id)
+		}
 	}
 
 	return nil
