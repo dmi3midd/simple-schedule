@@ -10,15 +10,9 @@ import (
 	"syscall"
 
 	"github.com/dmi3midd/simple-schedule/internal/config"
+	"github.com/dmi3midd/simple-schedule/internal/postgres"
 	"github.com/dmi3midd/simple-schedule/internal/server"
 )
-
-// @title           Simple Schedule API
-// @version         1.0
-// @description     Simple Schedule REST API service for managing activities and scheduling slots.
-// @host            localhost:2811
-// @BasePath        /
-// @schemes         http https
 
 func main() {
 	// Root context with signal cancellation for graceful shutdown
@@ -31,6 +25,14 @@ func main() {
 		slog.Error("failed to load config", slog.Any("error", err))
 		os.Exit(1)
 	}
+
+	// Postgres
+	pg, err := postgres.New(&cfg.Postgres)
+	if err != nil {
+		slog.Error("failed to connect to database", slog.Any("error", err))
+		os.Exit(1)
+	}
+	defer pg.Close()
 
 	// Create and start server
 	server := server.NewServer(

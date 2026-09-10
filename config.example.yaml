@@ -3,3 +3,13 @@ server:
   idleTimeout: 90s
   readTimeout: 10s
   writeTimeout: 15s
+postgres:
+  name: simpleschedule
+  host: postgres
+  port: 5432
+  user: simpleschedule_user
+  password: simpleschedule_9876
+  sslmode: disable
+  maxOpenConns: 10
+  maxIdleConns: 10
+  maxIdleTime: 15m
