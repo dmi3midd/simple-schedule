@@ -16,17 +16,17 @@ var (
 )
 
 type TagRepository interface {
-	// GetById retrieves a tag by its ID.
-	// Returns [ErrNoTag] if the tag is not found.
+	// GetById retrieves a tag by its ID. Returns [ErrNoTag] if not found.
 	GetById(ctx context.Context, id uuid.UUID) (*domain.Tag, error)
-	// GetAll retrieves all tags
-	// Returns an empty slice if no tags are found.
+	// GetByTitle retrieves a tag by its title. Returns [ErrNoTag] if not found.
+	GetByTitle(ctx context.Context, title string) (*domain.Tag, error)
+	// GetAll retrieves all tags.
 	GetAll(ctx context.Context) ([]domain.Tag, error)
-	// Create creates a new tag
-	Create(ctx context.Context, tag domain.Tag) (*domain.Tag, error)
-	// Update updates an existing tag
-	Update(ctx context.Context, tag domain.Tag) (*domain.Tag, error)
-	// Delete deletes a tag
+	// Create creates a new tag.
+	Create(ctx context.Context, tag domain.Tag) error
+	// Update updates an existing tag.
+	Update(ctx context.Context, tag domain.Tag) error
+	// Delete deletes a tag by ID.
 	Delete(ctx context.Context, id uuid.UUID) error
 }
 
@@ -53,11 +53,27 @@ func (r *tagRepository) GetById(ctx context.Context, id uuid.UUID) (*domain.Tag,
 	return &tag, nil
 }
 
+func (r *tagRepository) GetByTitle(ctx context.Context, title string) (*domain.Tag, error) {
+	op := "TagRepository.GetByTitle"
+	query := "SELECT id, title, hex_color, created_at, updated_at FROM tags WHERE title = $1"
+	var tag domain.Tag
+	executor := ExtractTx(ctx, r.db)
+	err := sqlx.GetContext(ctx, executor, &tag, query, title)
+	if err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			return nil, fmt.Errorf("%s: %w", op, ErrNoTag)
+		}
+		return nil, fmt.Errorf("%s: %w", op, err)
+	}
+	return &tag, nil
+}
+
 func (r *tagRepository) GetAll(ctx context.Context) ([]domain.Tag, error) {
 	op := "TagRepository.GetAll"
 	query := `
-	SELECT id, title, hex_color, created_at, updated_at 
-	FROM tags
+		SELECT id, title, hex_color, created_at, updated_at 
+		FROM tags
+		ORDER BY title ASC
 	`
 	var tags []domain.Tag
 	executor := ExtractTx(ctx, r.db)
@@ -68,41 +84,38 @@ func (r *tagRepository) GetAll(ctx context.Context) ([]domain.Tag, error) {
 	return tags, nil
 }
 
-func (r *tagRepository) Create(ctx context.Context, tag domain.Tag) (*domain.Tag, error) {
+func (r *tagRepository) Create(ctx context.Context, tag domain.Tag) error {
 	op := "TagRepository.Create"
 	query := `
-	INSERT INTO tags (id, title, hex_color, created_at, updated_at) 
-	VALUES (:id, :title, :hex_color, :created_at, :updated_at) 
+		INSERT INTO tags (id, title, hex_color, created_at, updated_at) 
+		VALUES (:id, :title, :hex_color, :created_at, :updated_at)
 	`
 	executor := ExtractTx(ctx, r.db)
 	_, err := sqlx.NamedExecContext(ctx, executor, query, tag)
 	if err != nil {
-		return nil, fmt.Errorf("%s: %w", op, err)
+		return fmt.Errorf("%s: %w", op, err)
 	}
-	return &tag, nil
+	return nil
 }
 
-func (r *tagRepository) Update(ctx context.Context, tag domain.Tag) (*domain.Tag, error) {
+func (r *tagRepository) Update(ctx context.Context, tag domain.Tag) error {
 	op := "TagRepository.Update"
 	query := `
-	UPDATE tags 
-	SET title = :title, hex_color = :hex_color, updated_at = :updated_at
-	WHERE id = :id
+		UPDATE tags 
+		SET title = :title, hex_color = :hex_color, updated_at = :updated_at
+		WHERE id = :id
 	`
 	executor := ExtractTx(ctx, r.db)
 	_, err := sqlx.NamedExecContext(ctx, executor, query, tag)
 	if err != nil {
-		return nil, fmt.Errorf("%s: %w", op, err)
+		return fmt.Errorf("%s: %w", op, err)
 	}
-	return &tag, nil
+	return nil
 }
 
 func (r *tagRepository) Delete(ctx context.Context, id uuid.UUID) error {
 	op := "TagRepository.Delete"
-	query := `
-	DELETE FROM tags 
-	WHERE id = :id
-	`
+	query := `DELETE FROM tags WHERE id = $1`
 	executor := ExtractTx(ctx, r.db)
 	_, err := executor.ExecContext(ctx, query, id)
 	if err != nil {

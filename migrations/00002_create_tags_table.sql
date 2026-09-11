@@ -1,7 +1,7 @@
 -- +goose Up
 CREATE TABLE tags (
 	id UUID PRIMARY KEY,
-	title VARCHAR(255) NOT NULL,
+	title VARCHAR(255) NOT NULL UNIQUE,
 	hex_color VARCHAR(7) NOT NULL,
 	created_at TIMESTAMPTZ NOT NULL,
 	updated_at TIMESTAMPTZ NOT NULL

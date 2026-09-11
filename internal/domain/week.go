@@ -12,3 +12,10 @@ type Week struct {
 	CreatedAt time.Time `json:"createdAt" db:"created_at"`
 	UpdatedAt time.Time `json:"updatedAt" db:"updated_at"`
 }
+
+type WeekSchedule struct {
+	Week  Week                        `json:"week"`
+	Slots []SlotWithTag               `json:"slots"`
+	Days  map[DayOfWeek][]SlotWithTag `json:"days"`
+}
+

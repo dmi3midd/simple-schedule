@@ -16,17 +16,15 @@ var (
 )
 
 type WeekRepository interface {
-	// GetById retrieves a week by its ID.
-	// Returns [ErrNoWeek] if the week is not found.
+	// GetById retrieves a week by its ID. Returns [ErrNoWeek] if not found.
 	GetById(ctx context.Context, id uuid.UUID) (*domain.Week, error)
-	// GetAll retrieves all weeks
-	// Returns an empty slice if no weeks are found.
+	// GetAll retrieves all weeks.
 	GetAll(ctx context.Context) ([]domain.Week, error)
-	// Create creates a new week
-	Create(ctx context.Context, week domain.Week) (*domain.Week, error)
-	// Update updates an existing week
-	Update(ctx context.Context, week domain.Week) (*domain.Week, error)
-	// Delete deletes a week
+	// Create creates a new week.
+	Create(ctx context.Context, week domain.Week) error
+	// Update updates an existing week.
+	Update(ctx context.Context, week domain.Week) error
+	// Delete deletes a week by ID.
 	Delete(ctx context.Context, id uuid.UUID) error
 }
 
@@ -60,7 +58,8 @@ func (r *weekRepository) GetAll(ctx context.Context) ([]domain.Week, error) {
 	op := "WeekRepository.GetAll"
 	query := `
 		SELECT id, title, created_at, updated_at 
-		FROM weeks`
+		FROM weeks
+		ORDER BY created_at ASC`
 	var weeks []domain.Week
 	executor := ExtractTx(ctx, r.db)
 	err := sqlx.SelectContext(ctx, executor, &weeks, query)
@@ -70,41 +69,38 @@ func (r *weekRepository) GetAll(ctx context.Context) ([]domain.Week, error) {
 	return weeks, nil
 }
 
-func (r *weekRepository) Create(ctx context.Context, week domain.Week) (*domain.Week, error) {
+func (r *weekRepository) Create(ctx context.Context, week domain.Week) error {
 	op := "WeekRepository.Create"
 	query := `
-	INSERT INTO weeks (id, title, created_at, updated_at) 
-	VALUES (:id, :title, :created_at, :updated_at) 
+		INSERT INTO weeks (id, title, created_at, updated_at) 
+		VALUES (:id, :title, :created_at, :updated_at)
 	`
 	executor := ExtractTx(ctx, r.db)
 	_, err := sqlx.NamedExecContext(ctx, executor, query, week)
 	if err != nil {
-		return nil, fmt.Errorf("%s: %w", op, err)
+		return fmt.Errorf("%s: %w", op, err)
 	}
-	return &week, nil
+	return nil
 }
 
-func (r *weekRepository) Update(ctx context.Context, week domain.Week) (*domain.Week, error) {
+func (r *weekRepository) Update(ctx context.Context, week domain.Week) error {
 	op := "WeekRepository.Update"
 	query := `
-	UPDATE weeks 
-	SET title = :title, updated_at = :updated_at
-	WHERE id = :id
+		UPDATE weeks 
+		SET title = :title, updated_at = :updated_at
+		WHERE id = :id
 	`
 	executor := ExtractTx(ctx, r.db)
 	_, err := sqlx.NamedExecContext(ctx, executor, query, week)
 	if err != nil {
-		return nil, fmt.Errorf("%s: %w", op, err)
+		return fmt.Errorf("%s: %w", op, err)
 	}
-	return &week, nil
+	return nil
 }
 
 func (r *weekRepository) Delete(ctx context.Context, id uuid.UUID) error {
 	op := "WeekRepository.Delete"
-	query := `
-	DELETE FROM weeks 
-	WHERE id = :id
-	`
+	query := `DELETE FROM weeks WHERE id = $1`
 	executor := ExtractTx(ctx, r.db)
 	_, err := executor.ExecContext(ctx, query, id)
 	if err != nil {
