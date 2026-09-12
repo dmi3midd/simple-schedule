@@ -9,7 +9,10 @@ import (
 	"os/signal"
 	"syscall"
 
+	"github.com/dmi3midd/shkvcache"
 	"github.com/dmi3midd/simple-schedule/internal/config"
+	"github.com/dmi3midd/simple-schedule/internal/domain"
+	"github.com/dmi3midd/simple-schedule/internal/logger"
 	"github.com/dmi3midd/simple-schedule/internal/postgres"
 	"github.com/dmi3midd/simple-schedule/internal/repository"
 	"github.com/dmi3midd/simple-schedule/internal/server"
@@ -35,6 +38,9 @@ func main() {
 		os.Exit(1)
 	}
 
+	// Initialize logger with configured level
+	logger.Setup(cfg.Log.Level)
+
 	// Postgres
 	pg, err := postgres.New(&cfg.Postgres)
 	if err != nil {
@@ -50,9 +56,17 @@ func main() {
 	weekRepo := repository.NewWeekRepository(db)
 	slotRepo := repository.NewSlotRepository(db)
 
+	// Cache
+	scheduleCache, err := shkvcache.NewCache[domain.WeekSchedule](ctx, shkvcache.DefaultOptions())
+	if err != nil {
+		slog.Error("failed to create cache", slog.Any("error", err))
+		os.Exit(1)
+	}
+	defer scheduleCache.Close()
+
 	// Services
 	tagService := service.NewTagService(tagRepo)
-	weekService := service.NewWeekService(weekRepo, slotRepo)
+	weekService := service.NewWeekService(weekRepo, slotRepo, *scheduleCache)
 	slotService := service.NewSlotService(slotRepo, weekRepo, tagRepo)
 
 	// Validator

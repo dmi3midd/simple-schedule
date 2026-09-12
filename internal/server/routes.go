@@ -36,5 +36,5 @@ func (s *Server) RegisterRoutes() http.Handler {
 	mux.HandleFunc("PUT /api/slots/{id}", apierror.ErrorHandler(s.slotHandler.Update))
 	mux.HandleFunc("DELETE /api/slots/{id}", apierror.ErrorHandler(s.slotHandler.Delete))
 
-	return corsMiddleware(mux)
+	return loggingMiddleware(corsMiddleware(mux))
 }

@@ -5,6 +5,11 @@ import "time"
 type Config struct {
 	Server   ServerConfig   `yaml:"server"`
 	Postgres PostgresConfig `yaml:"postgres"`
+	Log      LogConfig      `yaml:"log"`
+}
+
+type LogConfig struct {
+	Level string `yaml:"level"`
 }
 
 type ServerConfig struct {

@@ -3,6 +3,8 @@ server:
   idleTimeout: 90s
   readTimeout: 10s
   writeTimeout: 15s
+log:
+  level: info
 postgres:
   name: simpleschedule
   host: postgres

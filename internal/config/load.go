@@ -8,7 +8,12 @@ import (
 )
 
 func LoadConfig() (*Config, error) {
-	data, err := os.ReadFile("./config.yaml")
+	configPath := os.Getenv("CONFIG_PATH")
+	if configPath == "" {
+		configPath = "./config.yaml"
+	}
+
+	data, err := os.ReadFile(configPath)
 	if err != nil {
 		return nil, fmt.Errorf("failed to read config file: %w", err)
 	}
@@ -16,6 +21,10 @@ func LoadConfig() (*Config, error) {
 	cfg := &Config{}
 	if err := yaml.Unmarshal(data, cfg); err != nil {
 		return nil, fmt.Errorf("failed to unmarshal config file: %w", err)
+	}
+
+	if cfg.Log.Level == "" {
+		cfg.Log.Level = "info"
 	}
 
 	return cfg, nil

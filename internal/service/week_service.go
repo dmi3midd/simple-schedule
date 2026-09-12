@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"time"
 
+	"github.com/dmi3midd/shkvcache"
 	"github.com/dmi3midd/simple-schedule/internal/domain"
 	"github.com/dmi3midd/simple-schedule/internal/repository"
 	"github.com/google/uuid"
@@ -27,14 +28,16 @@ type WeekService interface {
 }
 
 type weekService struct {
-	weekRepo repository.WeekRepository
-	slotRepo repository.SlotRepository
+	weekRepo      repository.WeekRepository
+	slotRepo      repository.SlotRepository
+	scheduleCahce shkvcache.Cache[domain.WeekSchedule]
 }
 
-func NewWeekService(weekRepo repository.WeekRepository, slotRepo repository.SlotRepository) WeekService {
+func NewWeekService(weekRepo repository.WeekRepository, slotRepo repository.SlotRepository, scheduleCahce shkvcache.Cache[domain.WeekSchedule]) WeekService {
 	return &weekService{
-		weekRepo: weekRepo,
-		slotRepo: slotRepo,
+		weekRepo:      weekRepo,
+		slotRepo:      slotRepo,
+		scheduleCahce: scheduleCahce,
 	}
 }
 
@@ -80,6 +83,10 @@ func (s *weekService) GetAllWeeks(ctx context.Context) ([]domain.Week, error) {
 
 func (s *weekService) GetWeekSchedule(ctx context.Context, weekId uuid.UUID) (*domain.WeekSchedule, error) {
 	op := "WeekService.GetWeekSchedule"
+	if schedule, ok := s.scheduleCahce.Get(weekId.String()); ok {
+		return &schedule, nil
+	}
+
 	week, err := s.weekRepo.GetById(ctx, weekId)
 	if err != nil {
 		if errors.Is(err, repository.ErrNoWeek) {
@@ -102,11 +109,15 @@ func (s *weekService) GetWeekSchedule(ctx context.Context, weekId uuid.UUID) (*d
 		days[slot.DayOfWeek] = append(days[slot.DayOfWeek], slot)
 	}
 
-	return &domain.WeekSchedule{
+	schedule := domain.WeekSchedule{
 		Week:  *week,
 		Slots: slots,
 		Days:  days,
-	}, nil
+	}
+
+	s.scheduleCahce.Set(weekId.String(), schedule, 120)
+
+	return &schedule, nil
 }
 
 func (s *weekService) UpdateWeek(ctx context.Context, id uuid.UUID, title string) (uuid.UUID, error) {
