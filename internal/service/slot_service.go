@@ -44,20 +44,23 @@ type SlotService interface {
 }
 
 type slotService struct {
-	slotRepo repository.SlotRepository
-	weekRepo repository.WeekRepository
-	tagRepo  repository.TagRepository
+	slotRepo       repository.SlotRepository
+	weekRepo       repository.WeekRepository
+	tagRepo        repository.TagRepository
+	maxSlotsPerDay int
 }
 
 func NewSlotService(
 	slotRepo repository.SlotRepository,
 	weekRepo repository.WeekRepository,
 	tagRepo repository.TagRepository,
+	maxSlotsPerDay int,
 ) SlotService {
 	return &slotService{
-		slotRepo: slotRepo,
-		weekRepo: weekRepo,
-		tagRepo:  tagRepo,
+		slotRepo:       slotRepo,
+		weekRepo:       weekRepo,
+		tagRepo:        tagRepo,
+		maxSlotsPerDay: maxSlotsPerDay,
 	}
 }
 
@@ -85,6 +88,25 @@ func (s *slotService) validateSlot(ctx context.Context, weekID uuid.UUID, tagID 
 				return ErrTagNotFound
 			}
 			return err
+		}
+	}
+
+	if s.maxSlotsPerDay > 0 {
+		slots, err := s.slotRepo.GetByWeekId(ctx, weekID)
+		if err != nil {
+			return err
+		}
+		daySlotsCount := 0
+		for _, slot := range slots {
+			if excludeSlotID != nil && slot.ID == *excludeSlotID {
+				continue
+			}
+			if slot.DayOfWeek == dayOfWeek {
+				daySlotsCount++
+			}
+		}
+		if daySlotsCount >= s.maxSlotsPerDay {
+			return ErrMaxSlotsPerDayReached
 		}
 	}
 

@@ -28,6 +28,12 @@ var ErrorMap = map[error]func(err error) error{
 	service.ErrInvalidDayOfWeek: func(err error) error {
 		return NewBadRequestError(err, "Invalid day of week")
 	},
+	service.ErrMaxWeeksReached: func(err error) error {
+		return NewBadRequestError(err, "Maximum number of weeks reached")
+	},
+	service.ErrMaxSlotsPerDayReached: func(err error) error {
+		return NewBadRequestError(err, "Maximum slots per day limit reached")
+	},
 }
 
 func MapError(err error) error {

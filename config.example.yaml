@@ -5,6 +5,9 @@ server:
   writeTimeout: 15s
 log:
   level: info
+schedule:
+  maxWeeks: 10
+  maxSlotsPerDay: 5
 postgres:
   name: simpleschedule
   host: postgres

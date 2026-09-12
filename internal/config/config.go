@@ -6,10 +6,16 @@ type Config struct {
 	Server   ServerConfig   `yaml:"server"`
 	Postgres PostgresConfig `yaml:"postgres"`
 	Log      LogConfig      `yaml:"log"`
+	Schedule ScheduleConfig `yaml:"schedule"`
 }
 
 type LogConfig struct {
 	Level string `yaml:"level"`
+}
+
+type ScheduleConfig struct {
+	MaxWeeks       int `yaml:"maxWeeks"`
+	MaxSlotsPerDay int `yaml:"maxSlotsPerDay"`
 }
 
 type ServerConfig struct {

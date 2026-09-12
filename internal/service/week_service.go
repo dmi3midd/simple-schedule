@@ -31,18 +31,36 @@ type weekService struct {
 	weekRepo      repository.WeekRepository
 	slotRepo      repository.SlotRepository
 	scheduleCahce shkvcache.Cache[domain.WeekSchedule]
+	maxWeeks      int
 }
 
-func NewWeekService(weekRepo repository.WeekRepository, slotRepo repository.SlotRepository, scheduleCahce shkvcache.Cache[domain.WeekSchedule]) WeekService {
+func NewWeekService(
+	weekRepo repository.WeekRepository,
+	slotRepo repository.SlotRepository,
+	scheduleCahce shkvcache.Cache[domain.WeekSchedule],
+	maxWeeks int,
+) WeekService {
 	return &weekService{
 		weekRepo:      weekRepo,
 		slotRepo:      slotRepo,
 		scheduleCahce: scheduleCahce,
+		maxWeeks:      maxWeeks,
 	}
 }
 
 func (s *weekService) CreateWeek(ctx context.Context, title string) (uuid.UUID, error) {
 	op := "WeekService.CreateWeek"
+
+	if s.maxWeeks > 0 {
+		weeks, err := s.weekRepo.GetAll(ctx)
+		if err != nil {
+			return uuid.Nil, fmt.Errorf("%s: %w", op, err)
+		}
+		if len(weeks) >= s.maxWeeks {
+			return uuid.Nil, fmt.Errorf("%s: %w", op, ErrMaxWeeksReached)
+		}
+	}
+
 	id, err := uuid.NewV7()
 	if err != nil {
 		return uuid.Nil, fmt.Errorf("%s: %w", op, err)
