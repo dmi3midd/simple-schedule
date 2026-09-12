@@ -11,9 +11,18 @@ import (
 
 	"github.com/dmi3midd/simple-schedule/internal/config"
 	"github.com/dmi3midd/simple-schedule/internal/postgres"
+	"github.com/dmi3midd/simple-schedule/internal/repository"
 	"github.com/dmi3midd/simple-schedule/internal/server"
+	"github.com/dmi3midd/simple-schedule/internal/server/handlers"
+	"github.com/dmi3midd/simple-schedule/internal/service"
+	"github.com/go-playground/validator/v10"
 )
 
+// @title           SimpleSchedule API
+// @version         1.0
+// @description     SimpleSchedule service API.
+// @host            localhost:2811
+// @BasePath        /
 func main() {
 	// Root context with signal cancellation for graceful shutdown
 	ctx, stop := signal.NotifyContext(context.Background(), os.Interrupt, syscall.SIGTERM)
@@ -34,16 +43,39 @@ func main() {
 	}
 	defer pg.Close()
 
+	db := pg.GetDB()
+
+	// Repositories
+	tagRepo := repository.NewTagRepository(db)
+	weekRepo := repository.NewWeekRepository(db)
+	slotRepo := repository.NewSlotRepository(db)
+
+	// Services
+	tagService := service.NewTagService(tagRepo)
+	weekService := service.NewWeekService(weekRepo, slotRepo)
+	slotService := service.NewSlotService(slotRepo, weekRepo, tagRepo)
+
+	// Validator
+	val := validator.New()
+
+	// Handlers
+	tagHandler := handlers.NewTagHandler(tagService, val)
+	weekHandler := handlers.NewWeekHandler(weekService, val)
+	slotHandler := handlers.NewSlotHandler(slotService, val)
+
 	// Create and start server
-	server := server.NewServer(
+	srv := server.NewServer(
 		&cfg.Server,
+		tagHandler,
+		weekHandler,
+		slotHandler,
 	)
 	slog.Info(
 		"server is running",
 		slog.String("address", cfg.Server.Address),
 	)
 	go func() {
-		if err := server.ListenAndServe(); err != nil && !errors.Is(err, http.ErrServerClosed) {
+		if err := srv.ListenAndServe(); err != nil && !errors.Is(err, http.ErrServerClosed) {
 			slog.Error("failed to run server", slog.String("error", err.Error()))
 			os.Exit(1)
 		}

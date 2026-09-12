@@ -15,282 +15,9 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
-        "/activities": {
-            "get": {
-                "description": "Retrieve all created activities",
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "activities"
-                ],
-                "summary": "List activities",
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "type": "array",
-                            "items": {
-                                "$ref": "#/definitions/domain.Activity"
-                            }
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "$ref": "#/definitions/apierror.UserError"
-                        }
-                    }
-                }
-            },
+        "/api/slots": {
             "post": {
-                "description": "Create a new activity with a given title",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "activities"
-                ],
-                "summary": "Create an activity",
-                "parameters": [
-                    {
-                        "description": "Activity creation payload",
-                        "name": "request",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/handlers.CreateActivityRequest"
-                        }
-                    }
-                ],
-                "responses": {
-                    "201": {
-                        "description": "Created",
-                        "schema": {
-                            "$ref": "#/definitions/handlers.IDResponse"
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "$ref": "#/definitions/apierror.UserError"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "$ref": "#/definitions/apierror.UserError"
-                        }
-                    }
-                }
-            },
-            "delete": {
-                "description": "Delete all activities and cascade delete all slots",
-                "tags": [
-                    "activities"
-                ],
-                "summary": "Delete all activities",
-                "responses": {
-                    "204": {
-                        "description": "No Content"
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "$ref": "#/definitions/apierror.UserError"
-                        }
-                    }
-                }
-            }
-        },
-        "/activities/{id}": {
-            "get": {
-                "description": "Retrieve single activity by its unique identifier",
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "activities"
-                ],
-                "summary": "Get activity by ID",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "example": "\"d40c6c2b-e48f-4cb1-80a5-f8c5b6b801a2\"",
-                        "description": "Activity ID",
-                        "name": "id",
-                        "in": "path",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/domain.Activity"
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "$ref": "#/definitions/apierror.UserError"
-                        }
-                    },
-                    "404": {
-                        "description": "Not Found",
-                        "schema": {
-                            "$ref": "#/definitions/apierror.UserError"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "$ref": "#/definitions/apierror.UserError"
-                        }
-                    }
-                }
-            },
-            "put": {
-                "description": "Update title of an activity by its ID",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "activities"
-                ],
-                "summary": "Update activity",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "example": "\"d40c6c2b-e48f-4cb1-80a5-f8c5b6b801a2\"",
-                        "description": "Activity ID",
-                        "name": "id",
-                        "in": "path",
-                        "required": true
-                    },
-                    {
-                        "description": "Activity update payload",
-                        "name": "request",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/handlers.UpdateActivityRequest"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/handlers.IDResponse"
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "$ref": "#/definitions/apierror.UserError"
-                        }
-                    },
-                    "404": {
-                        "description": "Not Found",
-                        "schema": {
-                            "$ref": "#/definitions/apierror.UserError"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "$ref": "#/definitions/apierror.UserError"
-                        }
-                    }
-                }
-            },
-            "delete": {
-                "description": "Delete an activity by its ID and cascade delete all associated slots",
-                "tags": [
-                    "activities"
-                ],
-                "summary": "Delete activity",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "example": "\"d40c6c2b-e48f-4cb1-80a5-f8c5b6b801a2\"",
-                        "description": "Activity ID",
-                        "name": "id",
-                        "in": "path",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "204": {
-                        "description": "No Content"
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "$ref": "#/definitions/apierror.UserError"
-                        }
-                    },
-                    "404": {
-                        "description": "Not Found",
-                        "schema": {
-                            "$ref": "#/definitions/apierror.UserError"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "$ref": "#/definitions/apierror.UserError"
-                        }
-                    }
-                }
-            }
-        },
-        "/slots": {
-            "get": {
-                "description": "Retrieve all schedule slots, optionally filtered by activity_id query parameter",
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "slots"
-                ],
-                "summary": "List slots",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "example": "\"d40c6c2b-e48f-4cb1-80a5-f8c5b6b801a2\"",
-                        "description": "Filter by Activity ID",
-                        "name": "activity_id",
-                        "in": "query"
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "type": "array",
-                            "items": {
-                                "$ref": "#/definitions/domain.Slot"
-                            }
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "$ref": "#/definitions/apierror.UserError"
-                        }
-                    }
-                }
-            },
-            "post": {
-                "description": "Create a new schedule slot linked to an activity",
+                "description": "Create a new schedule slot with time range and day validation",
                 "consumes": [
                     "application/json"
                 ],
@@ -300,7 +27,7 @@ const docTemplate = `{
                 "tags": [
                     "slots"
                 ],
-                "summary": "Create a slot",
+                "summary": "Create slot",
                 "parameters": [
                     {
                         "description": "Slot creation payload",
@@ -325,23 +52,17 @@ const docTemplate = `{
                             "$ref": "#/definitions/apierror.UserError"
                         }
                     },
-                    "500": {
-                        "description": "Internal Server Error",
+                    "404": {
+                        "description": "Not Found",
                         "schema": {
                             "$ref": "#/definitions/apierror.UserError"
                         }
-                    }
-                }
-            },
-            "delete": {
-                "description": "Delete all schedule slots",
-                "tags": [
-                    "slots"
-                ],
-                "summary": "Delete all slots",
-                "responses": {
-                    "204": {
-                        "description": "No Content"
+                    },
+                    "409": {
+                        "description": "Conflict",
+                        "schema": {
+                            "$ref": "#/definitions/apierror.UserError"
+                        }
                     },
                     "500": {
                         "description": "Internal Server Error",
@@ -352,9 +73,9 @@ const docTemplate = `{
                 }
             }
         },
-        "/slots/{id}": {
+        "/api/slots/{id}": {
             "get": {
-                "description": "Retrieve single schedule slot by its unique identifier",
+                "description": "Retrieve a single schedule slot with its associated tag by its unique identifier",
                 "produces": [
                     "application/json"
                 ],
@@ -365,7 +86,7 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "string",
-                        "example": "\"f8a29b20-c23d-4299-8255-ec4319fb7914\"",
+                        "example": "\"d40c6c2b-e48f-4cb1-80a5-f8c5b6b801a2\"",
                         "description": "Slot ID",
                         "name": "id",
                         "in": "path",
@@ -376,7 +97,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/domain.Slot"
+                            "$ref": "#/definitions/handlers.SlotResponse"
                         }
                     },
                     "400": {
@@ -400,7 +121,7 @@ const docTemplate = `{
                 }
             },
             "put": {
-                "description": "Update details of an existing schedule slot",
+                "description": "Update details of an existing slot with collision validation",
                 "consumes": [
                     "application/json"
                 ],
@@ -414,7 +135,7 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "string",
-                        "example": "\"f8a29b20-c23d-4299-8255-ec4319fb7914\"",
+                        "example": "\"d40c6c2b-e48f-4cb1-80a5-f8c5b6b801a2\"",
                         "description": "Slot ID",
                         "name": "id",
                         "in": "path",
@@ -449,6 +170,12 @@ const docTemplate = `{
                             "$ref": "#/definitions/apierror.UserError"
                         }
                     },
+                    "409": {
+                        "description": "Conflict",
+                        "schema": {
+                            "$ref": "#/definitions/apierror.UserError"
+                        }
+                    },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
@@ -458,7 +185,7 @@ const docTemplate = `{
                 }
             },
             "delete": {
-                "description": "Delete a schedule slot by its ID",
+                "description": "Delete a schedule slot by its unique identifier",
                 "tags": [
                     "slots"
                 ],
@@ -466,7 +193,7 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "string",
-                        "example": "\"f8a29b20-c23d-4299-8255-ec4319fb7914\"",
+                        "example": "\"d40c6c2b-e48f-4cb1-80a5-f8c5b6b801a2\"",
                         "description": "Slot ID",
                         "name": "id",
                         "in": "path",
@@ -476,6 +203,546 @@ const docTemplate = `{
                 "responses": {
                     "204": {
                         "description": "No Content"
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/apierror.UserError"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/apierror.UserError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/apierror.UserError"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/tags": {
+            "get": {
+                "description": "Retrieve a list of all tags",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "tags"
+                ],
+                "summary": "Get all tags",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/handlers.TagsResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/apierror.UserError"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "description": "Create a new tag with title and hex color",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "tags"
+                ],
+                "summary": "Create tag",
+                "parameters": [
+                    {
+                        "description": "Tag creation payload",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/handlers.CreateTagRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/handlers.IDResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/apierror.UserError"
+                        }
+                    },
+                    "409": {
+                        "description": "Conflict",
+                        "schema": {
+                            "$ref": "#/definitions/apierror.UserError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/apierror.UserError"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/tags/{id}": {
+            "get": {
+                "description": "Retrieve a single tag by its unique identifier",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "tags"
+                ],
+                "summary": "Get tag by ID",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "example": "\"d40c6c2b-e48f-4cb1-80a5-f8c5b6b801a2\"",
+                        "description": "Tag ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/handlers.TagResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/apierror.UserError"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/apierror.UserError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/apierror.UserError"
+                        }
+                    }
+                }
+            },
+            "put": {
+                "description": "Update title and hex color of an existing tag",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "tags"
+                ],
+                "summary": "Update tag",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "example": "\"d40c6c2b-e48f-4cb1-80a5-f8c5b6b801a2\"",
+                        "description": "Tag ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Tag update payload",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/handlers.UpdateTagRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/handlers.IDResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/apierror.UserError"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/apierror.UserError"
+                        }
+                    },
+                    "409": {
+                        "description": "Conflict",
+                        "schema": {
+                            "$ref": "#/definitions/apierror.UserError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/apierror.UserError"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "description": "Delete a tag by its ID",
+                "tags": [
+                    "tags"
+                ],
+                "summary": "Delete tag",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "example": "\"d40c6c2b-e48f-4cb1-80a5-f8c5b6b801a2\"",
+                        "description": "Tag ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "No Content"
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/apierror.UserError"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/apierror.UserError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/apierror.UserError"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/weeks": {
+            "get": {
+                "description": "Retrieve a list of all schedule weeks",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "weeks"
+                ],
+                "summary": "Get all weeks",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/handlers.WeeksResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/apierror.UserError"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "description": "Create a new schedule week with title",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "weeks"
+                ],
+                "summary": "Create week",
+                "parameters": [
+                    {
+                        "description": "Week creation payload",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/handlers.CreateWeekRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/handlers.IDResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/apierror.UserError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/apierror.UserError"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/weeks/{id}": {
+            "get": {
+                "description": "Retrieve a single week by its unique identifier",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "weeks"
+                ],
+                "summary": "Get week by ID",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "example": "\"d40c6c2b-e48f-4cb1-80a5-f8c5b6b801a2\"",
+                        "description": "Week ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/handlers.WeekResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/apierror.UserError"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/apierror.UserError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/apierror.UserError"
+                        }
+                    }
+                }
+            },
+            "put": {
+                "description": "Update the title of an existing week",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "weeks"
+                ],
+                "summary": "Update week",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "example": "\"d40c6c2b-e48f-4cb1-80a5-f8c5b6b801a2\"",
+                        "description": "Week ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Week update payload",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/handlers.UpdateWeekRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/handlers.IDResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/apierror.UserError"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/apierror.UserError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/apierror.UserError"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "description": "Delete a week and cascade delete all its slots",
+                "tags": [
+                    "weeks"
+                ],
+                "summary": "Delete week",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "example": "\"d40c6c2b-e48f-4cb1-80a5-f8c5b6b801a2\"",
+                        "description": "Week ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "No Content"
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/apierror.UserError"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/apierror.UserError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/apierror.UserError"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/weeks/{id}/schedule": {
+            "get": {
+                "description": "Retrieve the complete schedule for a week including all slots grouped by days",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "weeks"
+                ],
+                "summary": "Get week schedule",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "example": "\"d40c6c2b-e48f-4cb1-80a5-f8c5b6b801a2\"",
+                        "description": "Week ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/handlers.WeekScheduleResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/apierror.UserError"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/apierror.UserError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/apierror.UserError"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/weeks/{id}/slots": {
+            "get": {
+                "description": "Retrieve all schedule slots with tags for a given week",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "slots"
+                ],
+                "summary": "Get slots by week ID",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "example": "\"d40c6c2b-e48f-4cb1-80a5-f8c5b6b801a2\"",
+                        "description": "Week ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/handlers.SlotsResponse"
+                        }
                     },
                     "400": {
                         "description": "Bad Request",
@@ -514,7 +781,83 @@ const docTemplate = `{
                 }
             }
         },
-        "domain.Activity": {
+        "domain.DayOfWeek": {
+            "type": "string",
+            "enum": [
+                "monday",
+                "tuesday",
+                "wednesday",
+                "thursday",
+                "friday",
+                "saturday",
+                "sunday"
+            ],
+            "x-enum-varnames": [
+                "Monday",
+                "Tuesday",
+                "Wednesday",
+                "Thursday",
+                "Friday",
+                "Saturday",
+                "Sunday"
+            ]
+        },
+        "domain.SlotWithTag": {
+            "type": "object",
+            "properties": {
+                "activity": {
+                    "type": "string"
+                },
+                "createdAt": {
+                    "type": "string"
+                },
+                "dayOfWeek": {
+                    "$ref": "#/definitions/domain.DayOfWeek"
+                },
+                "endTime": {
+                    "type": "integer"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "startTime": {
+                    "type": "integer"
+                },
+                "tag": {
+                    "$ref": "#/definitions/domain.Tag"
+                },
+                "tagId": {
+                    "type": "string"
+                },
+                "updatedAt": {
+                    "type": "string"
+                },
+                "weekId": {
+                    "type": "string"
+                }
+            }
+        },
+        "domain.Tag": {
+            "type": "object",
+            "properties": {
+                "createdAt": {
+                    "type": "string"
+                },
+                "hexColor": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "title": {
+                    "type": "string"
+                },
+                "updatedAt": {
+                    "type": "string"
+                }
+            }
+        },
+        "domain.Week": {
             "type": "object",
             "properties": {
                 "createdAt": {
@@ -531,33 +874,102 @@ const docTemplate = `{
                 }
             }
         },
-        "domain.Slot": {
+        "domain.WeekSchedule": {
             "type": "object",
             "properties": {
-                "activity_id": {
-                    "type": "string"
+                "days": {
+                    "type": "object",
+                    "additionalProperties": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/definitions/domain.SlotWithTag"
+                        }
+                    }
                 },
-                "createdAt": {
-                    "type": "string"
+                "slots": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/domain.SlotWithTag"
+                    }
                 },
-                "day": {
-                    "type": "string"
-                },
-                "duration": {
-                    "type": "string"
-                },
-                "id": {
-                    "type": "string"
-                },
-                "start_time": {
-                    "type": "string"
-                },
-                "updatedAt": {
-                    "type": "string"
+                "week": {
+                    "$ref": "#/definitions/domain.Week"
                 }
             }
         },
-        "handlers.CreateActivityRequest": {
+        "handlers.CreateSlotRequest": {
+            "type": "object",
+            "required": [
+                "activity",
+                "dayOfWeek",
+                "weekId"
+            ],
+            "properties": {
+                "activity": {
+                    "type": "string",
+                    "maxLength": 255,
+                    "minLength": 1,
+                    "example": "Higher Mathematics"
+                },
+                "dayOfWeek": {
+                    "enum": [
+                        "monday",
+                        "tuesday",
+                        "wednesday",
+                        "thursday",
+                        "friday",
+                        "saturday",
+                        "sunday"
+                    ],
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/domain.DayOfWeek"
+                        }
+                    ],
+                    "example": "monday"
+                },
+                "endTime": {
+                    "type": "integer",
+                    "maximum": 86400,
+                    "minimum": 0,
+                    "example": 39600
+                },
+                "startTime": {
+                    "type": "integer",
+                    "maximum": 86400,
+                    "minimum": 0,
+                    "example": 36000
+                },
+                "tagId": {
+                    "type": "string",
+                    "example": "97ec8552-9562-4d79-ab4c-1ca959663629"
+                },
+                "weekId": {
+                    "type": "string",
+                    "example": "d40c6c2b-e48f-4cb1-80a5-f8c5b6b801a2"
+                }
+            }
+        },
+        "handlers.CreateTagRequest": {
+            "type": "object",
+            "required": [
+                "hexColor",
+                "title"
+            ],
+            "properties": {
+                "hexColor": {
+                    "type": "string",
+                    "example": "#FF5733"
+                },
+                "title": {
+                    "type": "string",
+                    "maxLength": 255,
+                    "minLength": 1,
+                    "example": "Lecture"
+                }
+            }
+        },
+        "handlers.CreateWeekRequest": {
             "type": "object",
             "required": [
                 "title"
@@ -567,35 +979,7 @@ const docTemplate = `{
                     "type": "string",
                     "maxLength": 255,
                     "minLength": 1,
-                    "example": "Gym Workout"
-                }
-            }
-        },
-        "handlers.CreateSlotRequest": {
-            "type": "object",
-            "required": [
-                "activity_id",
-                "day",
-                "duration",
-                "start_time"
-            ],
-            "properties": {
-                "activity_id": {
-                    "type": "string",
-                    "example": "d40c6c2b-e48f-4cb1-80a5-f8c5b6b801a2"
-                },
-                "day": {
-                    "type": "string",
-                    "minLength": 1,
-                    "example": "Monday"
-                },
-                "duration": {
-                    "type": "string",
-                    "example": "1h30m"
-                },
-                "start_time": {
-                    "type": "string",
-                    "example": "09:00"
+                    "example": "Spring Semester 2026"
                 }
             }
         },
@@ -608,7 +992,117 @@ const docTemplate = `{
                 }
             }
         },
-        "handlers.UpdateActivityRequest": {
+        "handlers.SlotResponse": {
+            "type": "object",
+            "properties": {
+                "slot": {
+                    "$ref": "#/definitions/domain.SlotWithTag"
+                }
+            }
+        },
+        "handlers.SlotsResponse": {
+            "type": "object",
+            "properties": {
+                "slots": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/domain.SlotWithTag"
+                    }
+                }
+            }
+        },
+        "handlers.TagResponse": {
+            "type": "object",
+            "properties": {
+                "tag": {
+                    "$ref": "#/definitions/domain.Tag"
+                }
+            }
+        },
+        "handlers.TagsResponse": {
+            "type": "object",
+            "properties": {
+                "tags": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/domain.Tag"
+                    }
+                }
+            }
+        },
+        "handlers.UpdateSlotRequest": {
+            "type": "object",
+            "required": [
+                "activity",
+                "dayOfWeek",
+                "weekId"
+            ],
+            "properties": {
+                "activity": {
+                    "type": "string",
+                    "maxLength": 255,
+                    "minLength": 1,
+                    "example": "Physics Lecture"
+                },
+                "dayOfWeek": {
+                    "enum": [
+                        "monday",
+                        "tuesday",
+                        "wednesday",
+                        "thursday",
+                        "friday",
+                        "saturday",
+                        "sunday"
+                    ],
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/domain.DayOfWeek"
+                        }
+                    ],
+                    "example": "monday"
+                },
+                "endTime": {
+                    "type": "integer",
+                    "maximum": 86400,
+                    "minimum": 0,
+                    "example": 39600
+                },
+                "startTime": {
+                    "type": "integer",
+                    "maximum": 86400,
+                    "minimum": 0,
+                    "example": 36000
+                },
+                "tagId": {
+                    "type": "string",
+                    "example": "97ec8552-9562-4d79-ab4c-1ca959663629"
+                },
+                "weekId": {
+                    "type": "string",
+                    "example": "d40c6c2b-e48f-4cb1-80a5-f8c5b6b801a2"
+                }
+            }
+        },
+        "handlers.UpdateTagRequest": {
+            "type": "object",
+            "required": [
+                "hexColor",
+                "title"
+            ],
+            "properties": {
+                "hexColor": {
+                    "type": "string",
+                    "example": "#33FF57"
+                },
+                "title": {
+                    "type": "string",
+                    "maxLength": 255,
+                    "minLength": 1,
+                    "example": "Practice"
+                }
+            }
+        },
+        "handlers.UpdateWeekRequest": {
             "type": "object",
             "required": [
                 "title"
@@ -618,35 +1112,34 @@ const docTemplate = `{
                     "type": "string",
                     "maxLength": 255,
                     "minLength": 1,
-                    "example": "Evening Run"
+                    "example": "Autumn Semester 2026"
                 }
             }
         },
-        "handlers.UpdateSlotRequest": {
+        "handlers.WeekResponse": {
             "type": "object",
-            "required": [
-                "activity_id",
-                "day",
-                "duration",
-                "start_time"
-            ],
             "properties": {
-                "activity_id": {
-                    "type": "string",
-                    "example": "d40c6c2b-e48f-4cb1-80a5-f8c5b6b801a2"
-                },
-                "day": {
-                    "type": "string",
-                    "minLength": 1,
-                    "example": "Tuesday"
-                },
-                "duration": {
-                    "type": "string",
-                    "example": "2h"
-                },
-                "start_time": {
-                    "type": "string",
-                    "example": "10:00"
+                "week": {
+                    "$ref": "#/definitions/domain.Week"
+                }
+            }
+        },
+        "handlers.WeekScheduleResponse": {
+            "type": "object",
+            "properties": {
+                "schedule": {
+                    "$ref": "#/definitions/domain.WeekSchedule"
+                }
+            }
+        },
+        "handlers.WeeksResponse": {
+            "type": "object",
+            "properties": {
+                "weeks": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/domain.Week"
+                    }
                 }
             }
         }
@@ -658,9 +1151,9 @@ var SwaggerInfo = &swag.Spec{
 	Version:          "1.0",
 	Host:             "localhost:2811",
 	BasePath:         "/",
-	Schemes:          []string{"http", "https"},
-	Title:            "Simple Schedule API",
-	Description:      "Simple Schedule REST API service for managing activities and scheduling slots.",
+	Schemes:          []string{},
+	Title:            "SimpleSchedule API",
+	Description:      "SimpleSchedule service API.",
 	InfoInstanceName: "swagger",
 	SwaggerTemplate:  docTemplate,
 	LeftDelim:        "{{",

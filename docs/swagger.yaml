@@ -9,7 +9,61 @@ definitions:
       timestamp:
         type: string
     type: object
-  domain.Activity:
+  domain.DayOfWeek:
+    enum:
+    - monday
+    - tuesday
+    - wednesday
+    - thursday
+    - friday
+    - saturday
+    - sunday
+    type: string
+    x-enum-varnames:
+    - Monday
+    - Tuesday
+    - Wednesday
+    - Thursday
+    - Friday
+    - Saturday
+    - Sunday
+  domain.SlotWithTag:
+    properties:
+      activity:
+        type: string
+      createdAt:
+        type: string
+      dayOfWeek:
+        $ref: '#/definitions/domain.DayOfWeek'
+      endTime:
+        type: integer
+      id:
+        type: string
+      startTime:
+        type: integer
+      tag:
+        $ref: '#/definitions/domain.Tag'
+      tagId:
+        type: string
+      updatedAt:
+        type: string
+      weekId:
+        type: string
+    type: object
+  domain.Tag:
+    properties:
+      createdAt:
+        type: string
+      hexColor:
+        type: string
+      id:
+        type: string
+      title:
+        type: string
+      updatedAt:
+        type: string
+    type: object
+  domain.Week:
     properties:
       createdAt:
         type: string
@@ -20,53 +74,84 @@ definitions:
       updatedAt:
         type: string
     type: object
-  domain.Slot:
+  domain.WeekSchedule:
     properties:
-      activity_id:
-        type: string
-      createdAt:
-        type: string
-      day:
-        type: string
-      duration:
-        type: string
-      id:
-        type: string
-      start_time:
-        type: string
-      updatedAt:
-        type: string
+      days:
+        additionalProperties:
+          items:
+            $ref: '#/definitions/domain.SlotWithTag'
+          type: array
+        type: object
+      slots:
+        items:
+          $ref: '#/definitions/domain.SlotWithTag'
+        type: array
+      week:
+        $ref: '#/definitions/domain.Week'
     type: object
-  handlers.CreateActivityRequest:
+  handlers.CreateSlotRequest:
+    properties:
+      activity:
+        example: Higher Mathematics
+        maxLength: 255
+        minLength: 1
+        type: string
+      dayOfWeek:
+        allOf:
+        - $ref: '#/definitions/domain.DayOfWeek'
+        enum:
+        - monday
+        - tuesday
+        - wednesday
+        - thursday
+        - friday
+        - saturday
+        - sunday
+        example: monday
+      endTime:
+        example: 39600
+        maximum: 86400
+        minimum: 0
+        type: integer
+      startTime:
+        example: 36000
+        maximum: 86400
+        minimum: 0
+        type: integer
+      tagId:
+        example: 97ec8552-9562-4d79-ab4c-1ca959663629
+        type: string
+      weekId:
+        example: d40c6c2b-e48f-4cb1-80a5-f8c5b6b801a2
+        type: string
+    required:
+    - activity
+    - dayOfWeek
+    - weekId
+    type: object
+  handlers.CreateTagRequest:
+    properties:
+      hexColor:
+        example: '#FF5733'
+        type: string
+      title:
+        example: Lecture
+        maxLength: 255
+        minLength: 1
+        type: string
+    required:
+    - hexColor
+    - title
+    type: object
+  handlers.CreateWeekRequest:
     properties:
       title:
-        example: Gym Workout
+        example: Spring Semester 2026
         maxLength: 255
         minLength: 1
         type: string
     required:
     - title
-    type: object
-  handlers.CreateSlotRequest:
-    properties:
-      activity_id:
-        example: d40c6c2b-e48f-4cb1-80a5-f8c5b6b801a2
-        type: string
-      day:
-        example: Monday
-        minLength: 1
-        type: string
-      duration:
-        example: 1h30m
-        type: string
-      start_time:
-        example: "09:00"
-        type: string
-    required:
-    - activity_id
-    - day
-    - duration
-    - start_time
     type: object
   handlers.IDResponse:
     properties:
@@ -74,246 +159,123 @@ definitions:
         example: 97ec8552-9562-4d79-ab4c-1ca959663629
         type: string
     type: object
-  handlers.UpdateActivityRequest:
+  handlers.SlotResponse:
+    properties:
+      slot:
+        $ref: '#/definitions/domain.SlotWithTag'
+    type: object
+  handlers.SlotsResponse:
+    properties:
+      slots:
+        items:
+          $ref: '#/definitions/domain.SlotWithTag'
+        type: array
+    type: object
+  handlers.TagResponse:
+    properties:
+      tag:
+        $ref: '#/definitions/domain.Tag'
+    type: object
+  handlers.TagsResponse:
+    properties:
+      tags:
+        items:
+          $ref: '#/definitions/domain.Tag'
+        type: array
+    type: object
+  handlers.UpdateSlotRequest:
+    properties:
+      activity:
+        example: Physics Lecture
+        maxLength: 255
+        minLength: 1
+        type: string
+      dayOfWeek:
+        allOf:
+        - $ref: '#/definitions/domain.DayOfWeek'
+        enum:
+        - monday
+        - tuesday
+        - wednesday
+        - thursday
+        - friday
+        - saturday
+        - sunday
+        example: monday
+      endTime:
+        example: 39600
+        maximum: 86400
+        minimum: 0
+        type: integer
+      startTime:
+        example: 36000
+        maximum: 86400
+        minimum: 0
+        type: integer
+      tagId:
+        example: 97ec8552-9562-4d79-ab4c-1ca959663629
+        type: string
+      weekId:
+        example: d40c6c2b-e48f-4cb1-80a5-f8c5b6b801a2
+        type: string
+    required:
+    - activity
+    - dayOfWeek
+    - weekId
+    type: object
+  handlers.UpdateTagRequest:
+    properties:
+      hexColor:
+        example: '#33FF57'
+        type: string
+      title:
+        example: Practice
+        maxLength: 255
+        minLength: 1
+        type: string
+    required:
+    - hexColor
+    - title
+    type: object
+  handlers.UpdateWeekRequest:
     properties:
       title:
-        example: Evening Run
+        example: Autumn Semester 2026
         maxLength: 255
         minLength: 1
         type: string
     required:
     - title
     type: object
-  handlers.UpdateSlotRequest:
+  handlers.WeekResponse:
     properties:
-      activity_id:
-        example: d40c6c2b-e48f-4cb1-80a5-f8c5b6b801a2
-        type: string
-      day:
-        example: Tuesday
-        minLength: 1
-        type: string
-      duration:
-        example: 2h
-        type: string
-      start_time:
-        example: "10:00"
-        type: string
-    required:
-    - activity_id
-    - day
-    - duration
-    - start_time
+      week:
+        $ref: '#/definitions/domain.Week'
+    type: object
+  handlers.WeekScheduleResponse:
+    properties:
+      schedule:
+        $ref: '#/definitions/domain.WeekSchedule'
+    type: object
+  handlers.WeeksResponse:
+    properties:
+      weeks:
+        items:
+          $ref: '#/definitions/domain.Week'
+        type: array
     type: object
 host: localhost:2811
 info:
   contact: {}
-  description: Simple Schedule REST API service for managing activities and scheduling
-    slots.
-  title: Simple Schedule API
+  description: SimpleSchedule service API.
+  title: SimpleSchedule API
   version: "1.0"
 paths:
-  /activities:
-    delete:
-      description: Delete all activities and cascade delete all slots
-      responses:
-        "204":
-          description: No Content
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/apierror.UserError'
-      summary: Delete all activities
-      tags:
-      - activities
-    get:
-      description: Retrieve all created activities
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            items:
-              $ref: '#/definitions/domain.Activity'
-            type: array
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/apierror.UserError'
-      summary: List activities
-      tags:
-      - activities
+  /api/slots:
     post:
       consumes:
       - application/json
-      description: Create a new activity with a given title
-      parameters:
-      - description: Activity creation payload
-        in: body
-        name: request
-        required: true
-        schema:
-          $ref: '#/definitions/handlers.CreateActivityRequest'
-      produces:
-      - application/json
-      responses:
-        "201":
-          description: Created
-          schema:
-            $ref: '#/definitions/handlers.IDResponse'
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/apierror.UserError'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/apierror.UserError'
-      summary: Create an activity
-      tags:
-      - activities
-  /activities/{id}:
-    delete:
-      description: Delete an activity by its ID and cascade delete all associated
-        slots
-      parameters:
-      - description: Activity ID
-        example: '"d40c6c2b-e48f-4cb1-80a5-f8c5b6b801a2"'
-        in: path
-        name: id
-        required: true
-        type: string
-      responses:
-        "204":
-          description: No Content
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/apierror.UserError'
-        "404":
-          description: Not Found
-          schema:
-            $ref: '#/definitions/apierror.UserError'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/apierror.UserError'
-      summary: Delete activity
-      tags:
-      - activities
-    get:
-      description: Retrieve single activity by its unique identifier
-      parameters:
-      - description: Activity ID
-        example: '"d40c6c2b-e48f-4cb1-80a5-f8c5b6b801a2"'
-        in: path
-        name: id
-        required: true
-        type: string
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/domain.Activity'
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/apierror.UserError'
-        "404":
-          description: Not Found
-          schema:
-            $ref: '#/definitions/apierror.UserError'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/apierror.UserError'
-      summary: Get activity by ID
-      tags:
-      - activities
-    put:
-      consumes:
-      - application/json
-      description: Update title of an activity by its ID
-      parameters:
-      - description: Activity ID
-        example: '"d40c6c2b-e48f-4cb1-80a5-f8c5b6b801a2"'
-        in: path
-        name: id
-        required: true
-        type: string
-      - description: Activity update payload
-        in: body
-        name: request
-        required: true
-        schema:
-          $ref: '#/definitions/handlers.UpdateActivityRequest'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/handlers.IDResponse'
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/apierror.UserError'
-        "404":
-          description: Not Found
-          schema:
-            $ref: '#/definitions/apierror.UserError'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/apierror.UserError'
-      summary: Update activity
-      tags:
-      - activities
-  /slots:
-    delete:
-      description: Delete all schedule slots
-      responses:
-        "204":
-          description: No Content
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/apierror.UserError'
-      summary: Delete all slots
-      tags:
-      - slots
-    get:
-      description: Retrieve all schedule slots, optionally filtered by activity_id
-        query parameter
-      parameters:
-      - description: Filter by Activity ID
-        example: '"d40c6c2b-e48f-4cb1-80a5-f8c5b6b801a2"'
-        in: query
-        name: activity_id
-        type: string
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            items:
-              $ref: '#/definitions/domain.Slot'
-            type: array
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/apierror.UserError'
-      summary: List slots
-      tags:
-      - slots
-    post:
-      consumes:
-      - application/json
-      description: Create a new schedule slot linked to an activity
+      description: Create a new schedule slot with time range and day validation
       parameters:
       - description: Slot creation payload
         in: body
@@ -332,19 +294,27 @@ paths:
           description: Bad Request
           schema:
             $ref: '#/definitions/apierror.UserError'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/apierror.UserError'
+        "409":
+          description: Conflict
+          schema:
+            $ref: '#/definitions/apierror.UserError'
         "500":
           description: Internal Server Error
           schema:
             $ref: '#/definitions/apierror.UserError'
-      summary: Create a slot
+      summary: Create slot
       tags:
       - slots
-  /slots/{id}:
+  /api/slots/{id}:
     delete:
-      description: Delete a schedule slot by its ID
+      description: Delete a schedule slot by its unique identifier
       parameters:
       - description: Slot ID
-        example: '"f8a29b20-c23d-4299-8255-ec4319fb7914"'
+        example: '"d40c6c2b-e48f-4cb1-80a5-f8c5b6b801a2"'
         in: path
         name: id
         required: true
@@ -368,10 +338,11 @@ paths:
       tags:
       - slots
     get:
-      description: Retrieve single schedule slot by its unique identifier
+      description: Retrieve a single schedule slot with its associated tag by its
+        unique identifier
       parameters:
       - description: Slot ID
-        example: '"f8a29b20-c23d-4299-8255-ec4319fb7914"'
+        example: '"d40c6c2b-e48f-4cb1-80a5-f8c5b6b801a2"'
         in: path
         name: id
         required: true
@@ -382,7 +353,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/domain.Slot'
+            $ref: '#/definitions/handlers.SlotResponse'
         "400":
           description: Bad Request
           schema:
@@ -401,10 +372,10 @@ paths:
     put:
       consumes:
       - application/json
-      description: Update details of an existing schedule slot
+      description: Update details of an existing slot with collision validation
       parameters:
       - description: Slot ID
-        example: '"f8a29b20-c23d-4299-8255-ec4319fb7914"'
+        example: '"d40c6c2b-e48f-4cb1-80a5-f8c5b6b801a2"'
         in: path
         name: id
         required: true
@@ -430,6 +401,10 @@ paths:
           description: Not Found
           schema:
             $ref: '#/definitions/apierror.UserError'
+        "409":
+          description: Conflict
+          schema:
+            $ref: '#/definitions/apierror.UserError'
         "500":
           description: Internal Server Error
           schema:
@@ -437,7 +412,365 @@ paths:
       summary: Update slot
       tags:
       - slots
-schemes:
-- http
-- https
+  /api/tags:
+    get:
+      description: Retrieve a list of all tags
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/handlers.TagsResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/apierror.UserError'
+      summary: Get all tags
+      tags:
+      - tags
+    post:
+      consumes:
+      - application/json
+      description: Create a new tag with title and hex color
+      parameters:
+      - description: Tag creation payload
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/handlers.CreateTagRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/handlers.IDResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/apierror.UserError'
+        "409":
+          description: Conflict
+          schema:
+            $ref: '#/definitions/apierror.UserError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/apierror.UserError'
+      summary: Create tag
+      tags:
+      - tags
+  /api/tags/{id}:
+    delete:
+      description: Delete a tag by its ID
+      parameters:
+      - description: Tag ID
+        example: '"d40c6c2b-e48f-4cb1-80a5-f8c5b6b801a2"'
+        in: path
+        name: id
+        required: true
+        type: string
+      responses:
+        "204":
+          description: No Content
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/apierror.UserError'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/apierror.UserError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/apierror.UserError'
+      summary: Delete tag
+      tags:
+      - tags
+    get:
+      description: Retrieve a single tag by its unique identifier
+      parameters:
+      - description: Tag ID
+        example: '"d40c6c2b-e48f-4cb1-80a5-f8c5b6b801a2"'
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/handlers.TagResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/apierror.UserError'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/apierror.UserError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/apierror.UserError'
+      summary: Get tag by ID
+      tags:
+      - tags
+    put:
+      consumes:
+      - application/json
+      description: Update title and hex color of an existing tag
+      parameters:
+      - description: Tag ID
+        example: '"d40c6c2b-e48f-4cb1-80a5-f8c5b6b801a2"'
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Tag update payload
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/handlers.UpdateTagRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/handlers.IDResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/apierror.UserError'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/apierror.UserError'
+        "409":
+          description: Conflict
+          schema:
+            $ref: '#/definitions/apierror.UserError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/apierror.UserError'
+      summary: Update tag
+      tags:
+      - tags
+  /api/weeks:
+    get:
+      description: Retrieve a list of all schedule weeks
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/handlers.WeeksResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/apierror.UserError'
+      summary: Get all weeks
+      tags:
+      - weeks
+    post:
+      consumes:
+      - application/json
+      description: Create a new schedule week with title
+      parameters:
+      - description: Week creation payload
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/handlers.CreateWeekRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/handlers.IDResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/apierror.UserError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/apierror.UserError'
+      summary: Create week
+      tags:
+      - weeks
+  /api/weeks/{id}:
+    delete:
+      description: Delete a week and cascade delete all its slots
+      parameters:
+      - description: Week ID
+        example: '"d40c6c2b-e48f-4cb1-80a5-f8c5b6b801a2"'
+        in: path
+        name: id
+        required: true
+        type: string
+      responses:
+        "204":
+          description: No Content
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/apierror.UserError'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/apierror.UserError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/apierror.UserError'
+      summary: Delete week
+      tags:
+      - weeks
+    get:
+      description: Retrieve a single week by its unique identifier
+      parameters:
+      - description: Week ID
+        example: '"d40c6c2b-e48f-4cb1-80a5-f8c5b6b801a2"'
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/handlers.WeekResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/apierror.UserError'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/apierror.UserError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/apierror.UserError'
+      summary: Get week by ID
+      tags:
+      - weeks
+    put:
+      consumes:
+      - application/json
+      description: Update the title of an existing week
+      parameters:
+      - description: Week ID
+        example: '"d40c6c2b-e48f-4cb1-80a5-f8c5b6b801a2"'
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Week update payload
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/handlers.UpdateWeekRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/handlers.IDResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/apierror.UserError'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/apierror.UserError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/apierror.UserError'
+      summary: Update week
+      tags:
+      - weeks
+  /api/weeks/{id}/schedule:
+    get:
+      description: Retrieve the complete schedule for a week including all slots grouped
+        by days
+      parameters:
+      - description: Week ID
+        example: '"d40c6c2b-e48f-4cb1-80a5-f8c5b6b801a2"'
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/handlers.WeekScheduleResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/apierror.UserError'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/apierror.UserError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/apierror.UserError'
+      summary: Get week schedule
+      tags:
+      - weeks
+  /api/weeks/{id}/slots:
+    get:
+      description: Retrieve all schedule slots with tags for a given week
+      parameters:
+      - description: Week ID
+        example: '"d40c6c2b-e48f-4cb1-80a5-f8c5b6b801a2"'
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/handlers.SlotsResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/apierror.UserError'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/apierror.UserError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/apierror.UserError'
+      summary: Get slots by week ID
+      tags:
+      - slots
 swagger: "2.0"

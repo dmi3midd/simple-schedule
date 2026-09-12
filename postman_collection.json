@@ -2,15 +2,15 @@
 	"info": {
 		"_postman_id": "7b58c538-4f24-4f01-9fa6-2396e95cfa12",
 		"name": "Simple Schedule API",
-		"description": "Postman collection for Simple Schedule API covering Activities and Slots management.",
+		"description": "Postman collection for Simple Schedule API covering Tags, Weeks, and Slots management.",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
 	"item": [
 		{
-			"name": "Activities",
+			"name": "Tags",
 			"item": [
 				{
-					"name": "Create Activity",
+					"name": "Create Tag",
 					"event": [
 						{
 							"listen": "test",
@@ -19,7 +19,7 @@
 									"if (pm.response.code === 201) {",
 									"    const res = pm.response.json();",
 									"    if (res.id) {",
-									"        pm.collectionVariables.set('activityId', res.id);",
+									"        pm.collectionVariables.set('tagId', res.id);",
 									"    }",
 									"}"
 								],
@@ -37,67 +37,70 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"title\": \"Gym Workout\"\n}"
+							"raw": "{\n    \"title\": \"Lecture\",\n    \"hexColor\": \"#FF5733\"\n}"
 						},
 						"url": {
-							"raw": "{{baseUrl}}/activities",
+							"raw": "{{baseUrl}}/api/tags",
 							"host": [
 								"{{baseUrl}}"
 							],
 							"path": [
-								"activities"
+								"api",
+								"tags"
 							]
 						},
-						"description": "Creates a new activity."
+						"description": "Creates a new tag with title and hex color."
 					},
 					"response": []
 				},
 				{
-					"name": "List Activities",
+					"name": "List Tags",
 					"request": {
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{baseUrl}}/activities",
+							"raw": "{{baseUrl}}/api/tags",
 							"host": [
 								"{{baseUrl}}"
 							],
 							"path": [
-								"activities"
+								"api",
+								"tags"
 							]
 						},
-						"description": "Retrieves all activities."
+						"description": "Retrieves all tags."
 					},
 					"response": []
 				},
 				{
-					"name": "Get Activity by ID",
+					"name": "Get Tag by ID",
 					"request": {
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{baseUrl}}/activities/:id",
+							"raw": "{{baseUrl}}/api/tags/:id",
 							"host": [
 								"{{baseUrl}}"
 							],
 							"path": [
-								"activities",
+								"api",
+								"tags",
 								":id"
 							],
 							"variable": [
 								{
 									"key": "id",
-									"value": "{{activityId}}",
-									"description": "Activity UUID"
+									"value": "{{tagId}}",
+									"description": "Tag UUID"
 								}
 							]
 						},
-						"description": "Retrieves an activity by its ID."
+						"description": "Retrieves a tag by its ID."
 					},
 					"response": []
 				},
 				{
-					"name": "Update Activity",
+					"name": "Update Tag",
 					"request": {
 						"method": "PUT",
 						"header": [
@@ -108,70 +111,268 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"title\": \"Morning Running\"\n}"
+							"raw": "{\n    \"title\": \"Practice\",\n    \"hexColor\": \"#33FF57\"\n}"
 						},
 						"url": {
-							"raw": "{{baseUrl}}/activities/:id",
+							"raw": "{{baseUrl}}/api/tags/:id",
 							"host": [
 								"{{baseUrl}}"
 							],
 							"path": [
-								"activities",
+								"api",
+								"tags",
 								":id"
 							],
 							"variable": [
 								{
 									"key": "id",
-									"value": "{{activityId}}",
-									"description": "Activity UUID"
+									"value": "{{tagId}}",
+									"description": "Tag UUID"
 								}
 							]
 						},
-						"description": "Updates the title of an activity by its ID."
+						"description": "Updates the title and hex color of a tag by its ID."
 					},
 					"response": []
 				},
 				{
-					"name": "Delete Activity",
+					"name": "Delete Tag",
 					"request": {
 						"method": "DELETE",
 						"header": [],
 						"url": {
-							"raw": "{{baseUrl}}/activities/:id",
+							"raw": "{{baseUrl}}/api/tags/:id",
 							"host": [
 								"{{baseUrl}}"
 							],
 							"path": [
-								"activities",
+								"api",
+								"tags",
 								":id"
 							],
 							"variable": [
 								{
 									"key": "id",
-									"value": "{{activityId}}",
-									"description": "Activity UUID"
+									"value": "{{tagId}}",
+									"description": "Tag UUID"
 								}
 							]
 						},
-						"description": "Deletes an activity by its ID and cascades to its slots."
+						"description": "Deletes a tag by its ID."
 					},
 					"response": []
-				},
+				}
+			]
+		},
+		{
+			"name": "Weeks",
+			"item": [
 				{
-					"name": "Delete All Activities",
+					"name": "Create Week",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 201) {",
+									"    const res = pm.response.json();",
+									"    if (res.id) {",
+									"        pm.collectionVariables.set('weekId', res.id);",
+									"    }",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
 					"request": {
-						"method": "DELETE",
-						"header": [],
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"title\": \"Spring Semester 2026\"\n}"
+						},
 						"url": {
-							"raw": "{{baseUrl}}/activities",
+							"raw": "{{baseUrl}}/api/weeks",
 							"host": [
 								"{{baseUrl}}"
 							],
 							"path": [
-								"activities"
+								"api",
+								"weeks"
 							]
 						},
-						"description": "Deletes all activities and all slots."
+						"description": "Creates a new schedule week."
+					},
+					"response": []
+				},
+				{
+					"name": "List Weeks",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/weeks",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"weeks"
+							]
+						},
+						"description": "Retrieves all schedule weeks."
+					},
+					"response": []
+				},
+				{
+					"name": "Get Week by ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/weeks/:id",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"weeks",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "{{weekId}}",
+									"description": "Week UUID"
+								}
+							]
+						},
+						"description": "Retrieves a week by its ID."
+					},
+					"response": []
+				},
+				{
+					"name": "Get Week Schedule",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/weeks/:id/schedule",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"weeks",
+								":id",
+								"schedule"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "{{weekId}}",
+									"description": "Week UUID"
+								}
+							]
+						},
+						"description": "Retrieves full schedule for a week including all slots grouped by days."
+					},
+					"response": []
+				},
+				{
+					"name": "List Slots by Week ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/weeks/:id/slots",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"weeks",
+								":id",
+								"slots"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "{{weekId}}",
+									"description": "Week UUID"
+								}
+							]
+						},
+						"description": "Retrieves all slots for a given week."
+					},
+					"response": []
+				},
+				{
+					"name": "Update Week",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"title\": \"Autumn Semester 2026\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/weeks/:id",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"weeks",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "{{weekId}}",
+									"description": "Week UUID"
+								}
+							]
+						},
+						"description": "Updates a week title by its ID."
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Week",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/weeks/:id",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"weeks",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "{{weekId}}",
+									"description": "Week UUID"
+								}
+							]
+						},
+						"description": "Deletes a week by its ID and cascades to its slots."
 					},
 					"response": []
 				}
@@ -208,61 +409,19 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"activity_id\": \"{{activityId}}\",\n    \"day\": \"Monday\",\n    \"start_time\": \"09:00\",\n    \"duration\": \"1h30m\"\n}"
+							"raw": "{\n    \"weekId\": \"{{weekId}}\",\n    \"tagId\": \"{{tagId}}\",\n    \"dayOfWeek\": \"monday\",\n    \"activity\": \"Higher Mathematics\",\n    \"startTime\": 36000,\n    \"endTime\": 39600\n}"
 						},
 						"url": {
-							"raw": "{{baseUrl}}/slots",
+							"raw": "{{baseUrl}}/api/slots",
 							"host": [
 								"{{baseUrl}}"
 							],
 							"path": [
+								"api",
 								"slots"
 							]
 						},
-						"description": "Creates a new schedule slot."
-					},
-					"response": []
-				},
-				{
-					"name": "List All Slots",
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "{{baseUrl}}/slots",
-							"host": [
-								"{{baseUrl}}"
-							],
-							"path": [
-								"slots"
-							]
-						},
-						"description": "Retrieves all schedule slots."
-					},
-					"response": []
-				},
-				{
-					"name": "List Slots by Activity ID",
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "{{baseUrl}}/slots?activity_id={{activityId}}",
-							"host": [
-								"{{baseUrl}}"
-							],
-							"path": [
-								"slots"
-							],
-							"query": [
-								{
-									"key": "activity_id",
-									"value": "{{activityId}}",
-									"description": "Filter slots by activity ID"
-								}
-							]
-						},
-						"description": "Retrieves slots filtered by a specific activity ID."
+						"description": "Creates a new schedule slot with time range and day validation."
 					},
 					"response": []
 				},
@@ -272,11 +431,12 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{baseUrl}}/slots/:id",
+							"raw": "{{baseUrl}}/api/slots/:id",
 							"host": [
 								"{{baseUrl}}"
 							],
 							"path": [
+								"api",
 								"slots",
 								":id"
 							],
@@ -288,7 +448,7 @@
 								}
 							]
 						},
-						"description": "Retrieves a slot by its ID."
+						"description": "Retrieves a slot with associated tag by its ID."
 					},
 					"response": []
 				},
@@ -304,14 +464,15 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"activity_id\": \"{{activityId}}\",\n    \"day\": \"Tuesday\",\n    \"start_time\": \"10:00\",\n    \"duration\": \"2h\"\n}"
+							"raw": "{\n    \"weekId\": \"{{weekId}}\",\n    \"tagId\": \"{{tagId}}\",\n    \"dayOfWeek\": \"monday\",\n    \"activity\": \"Physics Lecture\",\n    \"startTime\": 36000,\n    \"endTime\": 39600\n}"
 						},
 						"url": {
-							"raw": "{{baseUrl}}/slots/:id",
+							"raw": "{{baseUrl}}/api/slots/:id",
 							"host": [
 								"{{baseUrl}}"
 							],
 							"path": [
+								"api",
 								"slots",
 								":id"
 							],
@@ -323,7 +484,7 @@
 								}
 							]
 						},
-						"description": "Updates a schedule slot by its ID."
+						"description": "Updates an existing slot with collision validation."
 					},
 					"response": []
 				},
@@ -333,11 +494,12 @@
 						"method": "DELETE",
 						"header": [],
 						"url": {
-							"raw": "{{baseUrl}}/slots/:id",
+							"raw": "{{baseUrl}}/api/slots/:id",
 							"host": [
 								"{{baseUrl}}"
 							],
 							"path": [
+								"api",
 								"slots",
 								":id"
 							],
@@ -352,30 +514,31 @@
 						"description": "Deletes a slot by its ID."
 					},
 					"response": []
-				},
-				{
-					"name": "Delete All Slots",
-					"request": {
-						"method": "DELETE",
-						"header": [],
-						"url": {
-							"raw": "{{baseUrl}}/slots",
-							"host": [
-								"{{baseUrl}}"
-							],
-							"path": [
-								"slots"
-							]
-						},
-						"description": "Deletes all schedule slots."
-					},
-					"response": []
 				}
 			]
 		},
 		{
 			"name": "Swagger",
 			"item": [
+				{
+					"name": "Get Swagger UI",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/swagger/index.html",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"swagger",
+								"index.html"
+							]
+						},
+						"description": "Access Swagger UI web interface."
+					},
+					"response": []
+				},
 				{
 					"name": "Get Swagger Doc JSON",
 					"request": {
@@ -405,7 +568,12 @@
 			"type": "string"
 		},
 		{
-			"key": "activityId",
+			"key": "tagId",
+			"value": "97ec8552-9562-4d79-ab4c-1ca959663629",
+			"type": "string"
+		},
+		{
+			"key": "weekId",
 			"value": "d40c6c2b-e48f-4cb1-80a5-f8c5b6b801a2",
 			"type": "string"
 		},
