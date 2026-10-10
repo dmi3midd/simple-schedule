@@ -66,8 +66,9 @@ func main() {
 
 	// Services
 	tagService := service.NewTagService(tagRepo)
-	weekService := service.NewWeekService(weekRepo, slotRepo, *scheduleCache, cfg.Schedule.MaxWeeks)
-	slotService := service.NewSlotService(slotRepo, weekRepo, tagRepo, cfg.Schedule.MaxSlotsPerDay)
+	weekService := service.NewWeekService(weekRepo, slotRepo, scheduleCache, cfg.Schedule.MaxWeeks)
+	slotService := service.NewSlotService(slotRepo, weekRepo, tagRepo, scheduleCache, cfg.Schedule.MaxSlotsPerDay)
+
 
 	// Validator
 	val := validator.New()

@@ -30,23 +30,24 @@ type WeekService interface {
 type weekService struct {
 	weekRepo      repository.WeekRepository
 	slotRepo      repository.SlotRepository
-	scheduleCahce shkvcache.Cache[domain.WeekSchedule]
+	scheduleCache *shkvcache.Cache[domain.WeekSchedule]
 	maxWeeks      int
 }
 
 func NewWeekService(
 	weekRepo repository.WeekRepository,
 	slotRepo repository.SlotRepository,
-	scheduleCahce shkvcache.Cache[domain.WeekSchedule],
+	scheduleCache *shkvcache.Cache[domain.WeekSchedule],
 	maxWeeks int,
 ) WeekService {
 	return &weekService{
 		weekRepo:      weekRepo,
 		slotRepo:      slotRepo,
-		scheduleCahce: scheduleCahce,
+		scheduleCache: scheduleCache,
 		maxWeeks:      maxWeeks,
 	}
 }
+
 
 func (s *weekService) CreateWeek(ctx context.Context, title string) (uuid.UUID, error) {
 	op := "WeekService.CreateWeek"
@@ -101,8 +102,10 @@ func (s *weekService) GetAllWeeks(ctx context.Context) ([]domain.Week, error) {
 
 func (s *weekService) GetWeekSchedule(ctx context.Context, weekId uuid.UUID) (*domain.WeekSchedule, error) {
 	op := "WeekService.GetWeekSchedule"
-	if schedule, ok := s.scheduleCahce.Get(weekId.String()); ok {
-		return &schedule, nil
+	if s.scheduleCache != nil {
+		if schedule, ok := s.scheduleCache.Get(weekId.String()); ok {
+			return &schedule, nil
+		}
 	}
 
 	week, err := s.weekRepo.GetById(ctx, weekId)
@@ -133,7 +136,9 @@ func (s *weekService) GetWeekSchedule(ctx context.Context, weekId uuid.UUID) (*d
 		Days:  days,
 	}
 
-	s.scheduleCahce.Set(weekId.String(), schedule, 120)
+	if s.scheduleCache != nil {
+		s.scheduleCache.Set(weekId.String(), schedule, 120)
+	}
 
 	return &schedule, nil
 }
@@ -158,6 +163,11 @@ func (s *weekService) UpdateWeek(ctx context.Context, id uuid.UUID, title string
 	if err := s.weekRepo.Update(ctx, week); err != nil {
 		return uuid.Nil, fmt.Errorf("%s: %w", op, err)
 	}
+
+	if s.scheduleCache != nil {
+		s.scheduleCache.Del(id.String())
+	}
+
 	return id, nil
 }
 
@@ -174,5 +184,11 @@ func (s *weekService) DeleteWeek(ctx context.Context, id uuid.UUID) error {
 	if err := s.weekRepo.Delete(ctx, id); err != nil {
 		return fmt.Errorf("%s: %w", op, err)
 	}
+
+	if s.scheduleCache != nil {
+		s.scheduleCache.Del(id.String())
+	}
+
 	return nil
 }
+

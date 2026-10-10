@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"time"
 
+	"github.com/dmi3midd/shkvcache"
 	"github.com/dmi3midd/simple-schedule/internal/domain"
 	"github.com/dmi3midd/simple-schedule/internal/repository"
 	"github.com/google/uuid"
@@ -47,6 +48,7 @@ type slotService struct {
 	slotRepo       repository.SlotRepository
 	weekRepo       repository.WeekRepository
 	tagRepo        repository.TagRepository
+	scheduleCache  *shkvcache.Cache[domain.WeekSchedule]
 	maxSlotsPerDay int
 }
 
@@ -54,15 +56,18 @@ func NewSlotService(
 	slotRepo repository.SlotRepository,
 	weekRepo repository.WeekRepository,
 	tagRepo repository.TagRepository,
+	scheduleCache *shkvcache.Cache[domain.WeekSchedule],
 	maxSlotsPerDay int,
 ) SlotService {
 	return &slotService{
 		slotRepo:       slotRepo,
 		weekRepo:       weekRepo,
 		tagRepo:        tagRepo,
+		scheduleCache:  scheduleCache,
 		maxSlotsPerDay: maxSlotsPerDay,
 	}
 }
+
 
 func (s *slotService) validateSlot(ctx context.Context, weekID uuid.UUID, tagID *uuid.UUID, dayOfWeek domain.DayOfWeek, startTime, endTime int, excludeSlotID *uuid.UUID) error {
 	if startTime < 0 || endTime > 86400 || startTime >= endTime {
@@ -150,6 +155,10 @@ func (s *slotService) CreateSlot(ctx context.Context, input CreateSlotInput) (uu
 		return uuid.Nil, fmt.Errorf("%s: %w", op, err)
 	}
 
+	if s.scheduleCache != nil {
+		s.scheduleCache.Del(input.WeekID.String())
+	}
+
 	return id, nil
 }
 
@@ -184,13 +193,20 @@ func (s *slotService) UpdateSlot(ctx context.Context, input UpdateSlotInput) err
 		return fmt.Errorf("%s: %w", op, err)
 	}
 
+	if s.scheduleCache != nil {
+		s.scheduleCache.Del(input.WeekID.String())
+		if existing.WeekID != input.WeekID {
+			s.scheduleCache.Del(existing.WeekID.String())
+		}
+	}
+
 	return nil
 }
 
 func (s *slotService) DeleteSlot(ctx context.Context, id uuid.UUID) error {
 	op := "SlotService.DeleteSlot"
 
-	_, err := s.slotRepo.GetById(ctx, id)
+	existing, err := s.slotRepo.GetById(ctx, id)
 	if err != nil {
 		if errors.Is(err, repository.ErrNoSlot) {
 			return fmt.Errorf("%s: %w", op, ErrSlotNotFound)
@@ -202,8 +218,13 @@ func (s *slotService) DeleteSlot(ctx context.Context, id uuid.UUID) error {
 		return fmt.Errorf("%s: %w", op, err)
 	}
 
+	if s.scheduleCache != nil {
+		s.scheduleCache.Del(existing.WeekID.String())
+	}
+
 	return nil
 }
+
 
 func (s *slotService) GetSlot(ctx context.Context, id uuid.UUID) (*domain.SlotWithTag, error) {
 	op := "SlotService.GetSlot"
