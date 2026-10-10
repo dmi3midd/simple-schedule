@@ -1,5 +1,5 @@
 import type { SlotWithTag } from '../types/schedule';
-import { formatTimeRange, getDurationMinutes } from '../utils/time';
+import { secondsToTimeString, getDurationMinutes } from '../utils/time';
 import { Clock, Edit2, Trash2 } from 'lucide-react';
 
 interface SlotCardProps {
@@ -22,18 +22,18 @@ export const SlotCard: React.FC<SlotCardProps> = ({ slot, onEdit, onDelete }) =>
     >
       <div>
         {/* Header: Time and actions */}
-        <div className="flex items-center justify-between gap-1 mb-2">
-          <div className="flex items-center gap-1.5 text-[11px] font-semibold text-sand bg-canvas-deep/80 border border-accent/40 px-2 py-0.5 rounded-md">
-            <Clock className="w-3 h-3 text-sand-muted" />
-            <span>{formatTimeRange(slot.startTime, slot.endTime)}</span>
-            <span className="text-sand-dim font-normal">({duration}m)</span>
+        <div className="flex items-center justify-between gap-2 mb-2.5">
+          <div className="inline-flex items-center gap-1.5 text-[11px] font-semibold text-sand bg-canvas-deep/90 border border-accent/50 px-2 py-0.5 rounded-md">
+            <Clock className="w-3 h-3 text-sand-muted shrink-0" />
+            <span className="whitespace-nowrap">{secondsToTimeString(slot.startTime)} - {secondsToTimeString(slot.endTime)}</span>
+            <span className="text-sand-dim font-normal text-[10px] shrink-0">({duration}хв)</span>
           </div>
 
-          <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+          <div className="flex items-center gap-1 shrink-0">
             <button
               onClick={() => onEdit(slot)}
               title="Редагувати"
-              className="p-1 text-sand-muted hover:text-sand hover:bg-accent/40 rounded-md transition-colors"
+              className="p-1 text-sand-muted hover:text-sand hover:bg-accent/60 rounded-md transition-colors"
             >
               <Edit2 className="w-3.5 h-3.5" />
             </button>

@@ -2,21 +2,13 @@ import React, { useState, useEffect } from 'react';
 import type { DayOfWeek, SlotWithTag } from '../../types/schedule';
 import { DAYS_OF_WEEK, secondsToTimeString, timeStringToSeconds } from '../../utils/time';
 import { useScheduleStore } from '../../store/useScheduleStore';
-import { X, Edit2, Sparkles } from 'lucide-react';
+import { X, Edit2 } from 'lucide-react';
 
 interface EditSlotModalProps {
   isOpen: boolean;
   onClose: () => void;
   slot: SlotWithTag | null;
 }
-
-const PRESET_TIMES = [
-  { label: '1 пара (08:30 – 10:05)', start: '08:30', end: '10:05' },
-  { label: '2 пара (10:20 – 11:55)', start: '10:20', end: '11:55' },
-  { label: '3 пара (12:10 – 13:45)', start: '12:10', end: '13:45' },
-  { label: '4 пара (14:15 – 15:50)', start: '14:15', end: '15:50' },
-  { label: '5 пара (16:05 – 17:40)', start: '16:05', end: '17:40' },
-];
 
 export const EditSlotModal: React.FC<EditSlotModalProps> = ({
   isOpen,
@@ -72,12 +64,8 @@ export const EditSlotModal: React.FC<EditSlotModalProps> = ({
     }
   };
 
-  const applyPreset = (start: string, end: string) => {
-    setStartTime(start);
-    setEndTime(end);
-  };
-
   return (
+
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-canvas-deep/80 backdrop-blur-sm animate-fade-in font-mono">
       <div className="bg-canvas border border-panel rounded-2xl w-full max-w-lg p-6 shadow-2xl relative">
         <div className="flex items-center justify-between pb-4 mb-4 border-b border-panel">
@@ -136,31 +124,9 @@ export const EditSlotModal: React.FC<EditSlotModalProps> = ({
             />
           </div>
 
-          {/* Presets */}
-          <div>
-            <div className="flex items-center gap-1.5 text-xs font-semibold text-sand-muted uppercase tracking-wider mb-1.5">
-              <Sparkles className="w-3.5 h-3.5 text-sand" />
-              <span>пресети пар</span>
-            </div>
-            <div className="flex flex-wrap gap-1.5">
-              {PRESET_TIMES.map((preset, idx) => (
-                <button
-                  type="button"
-                  key={idx}
-                  onClick={() => applyPreset(preset.start, preset.end)}
-                  className={`text-[11px] px-2.5 py-1 rounded-md border transition-all ${startTime === preset.start && endTime === preset.end
-                      ? 'bg-accent text-sand border-sand font-bold'
-                      : 'bg-panel/40 text-sand-muted border-panel hover:text-sand hover:bg-panel'
-                    }`}
-                >
-                  {preset.label}
-                </button>
-              ))}
-            </div>
-          </div>
-
           {/* Times */}
           <div className="grid grid-cols-2 gap-3">
+
             <div>
               <label className="block text-xs font-semibold text-sand-muted uppercase tracking-wider mb-1.5">
                 час початку
