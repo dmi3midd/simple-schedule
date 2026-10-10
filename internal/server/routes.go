@@ -1,10 +1,13 @@
 package server
 
 import (
+	"io/fs"
 	"net/http"
+	"strings"
 
 	_ "github.com/dmi3midd/simple-schedule/docs"
 	"github.com/dmi3midd/simple-schedule/internal/shared/httputils/apierror"
+	webui "github.com/dmi3midd/simple-schedule/web"
 	httpSwagger "github.com/swaggo/http-swagger/v2"
 )
 
@@ -36,5 +39,26 @@ func (s *Server) RegisterRoutes() http.Handler {
 	mux.HandleFunc("PUT /api/slots/{id}", apierror.ErrorHandler(s.slotHandler.Update))
 	mux.HandleFunc("DELETE /api/slots/{id}", apierror.ErrorHandler(s.slotHandler.Delete))
 
+	// Web UI — embedded SPA
+	distFS, _ := fs.Sub(webui.StaticFS, "dist")
+	staticHandler := http.FileServer(http.FS(distFS))
+
+	mux.HandleFunc("GET /", func(w http.ResponseWriter, r *http.Request) {
+		path := r.URL.Path
+
+		// Try to serve the static file directly (JS, CSS, images, etc.)
+		if path != "/" && !strings.HasPrefix(path, "/api") && !strings.HasPrefix(path, "/swagger") {
+			if f, err := fs.Stat(distFS, strings.TrimPrefix(path, "/")); err == nil && !f.IsDir() {
+				staticHandler.ServeHTTP(w, r)
+				return
+			}
+		}
+
+		// Fallback: serve index.html for SPA client-side routing
+		r.URL.Path = "/"
+		staticHandler.ServeHTTP(w, r)
+	})
+
 	return loggingMiddleware(corsMiddleware(mux))
 }
+

@@ -4,15 +4,26 @@ run:
 	@go run ./cmd
 
 # Build the binary locally
-build:
-	@echo "Building..."
+build: build-web
+	@echo "Building Go binary..."
 	@go build -o main ./cmd
 
+# Build web frontend
+build-web:
+	@echo "Building frontend..."
+	@cd web && npm run build
+
+# Run web frontend in dev mode
+dev-web:
+	@echo "Starting frontend dev server..."
+	@cd web && npm run dev
 
 # Clean up build artifacts
 clean:
 	@echo "Cleaning up..."
 	@rm -f main
+	@rm -rf web/dist
+
 
 # Docker: Build containers
 docker-build:
@@ -44,4 +55,4 @@ swagger:
 	@swag init -g main.go -d cmd,internal/server/handlers,internal/domain,internal/shared/httputils/apierror --parseInternal
 
 
-.PHONY: run build swagger clean docker-build docker-run docker-down docker-down-v docker-logs docker-restart swagger
+.PHONY: run build build-web dev-web swagger clean docker-build docker-run docker-down docker-down-v docker-logs docker-restart
