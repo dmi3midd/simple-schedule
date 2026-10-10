@@ -16,25 +16,25 @@ export const ToastContainer: React.FC = () => {
         return (
           <div
             key={toast.id}
-            className={`pointer-events-auto flex items-start gap-3 p-4 rounded-xl shadow-xl backdrop-blur-md border transition-all duration-300 animate-slide-up ${
+            className={`pointer-events-auto flex items-start gap-3 p-4 rounded-xl shadow-xl backdrop-blur-md border transition-all duration-300 animate-slide-up font-mono ${
               isError
-                ? 'bg-rose-950/80 border-rose-800/80 text-rose-200'
+                ? 'bg-[#3d1818]/90 border-rose-800/80 text-rose-200'
                 : isSuccess
-                ? 'bg-emerald-950/80 border-emerald-800/80 text-emerald-200'
-                : 'bg-slate-900/90 border-slate-700/80 text-slate-200'
+                ? 'bg-[#183d28]/90 border-emerald-800/80 text-emerald-200'
+                : 'bg-panel/95 border-accent text-sand'
             }`}
           >
             <div className="shrink-0 mt-0.5">
               {isError && <AlertCircle className="w-5 h-5 text-rose-400" />}
               {isSuccess && <CheckCircle className="w-5 h-5 text-emerald-400" />}
-              {!isError && !isSuccess && <Info className="w-5 h-5 text-sky-400" />}
+              {!isError && !isSuccess && <Info className="w-5 h-5 text-sand" />}
             </div>
             <div className="flex-1 text-sm font-medium leading-relaxed">
               {toast.message}
             </div>
             <button
               onClick={() => removeToast(toast.id)}
-              className="shrink-0 text-slate-400 hover:text-white transition-colors p-0.5 rounded-lg hover:bg-white/10"
+              className="shrink-0 text-sand-dim hover:text-sand transition-colors p-0.5 rounded-lg hover:bg-white/10"
             >
               <X className="w-4 h-4" />
             </button>
@@ -44,3 +44,4 @@ export const ToastContainer: React.FC = () => {
     </div>
   );
 };
+

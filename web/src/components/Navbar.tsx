@@ -1,7 +1,6 @@
 import React from 'react';
 import { useScheduleStore } from '../store/useScheduleStore';
 import {
-  Calendar,
   Plus,
   Tag as TagIcon,
   BookOpen,
@@ -26,24 +25,24 @@ export const Navbar: React.FC<NavbarProps> = ({
   const activeWeek = weeks.find((w) => w.id === activeWeekId);
 
   return (
-    <header className="sticky top-0 z-40 bg-slate-950/80 backdrop-blur-xl border-b border-slate-800/80">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between gap-4">
+    <header className="sticky top-0 z-40 bg-canvas-deep/90 backdrop-blur-xl border-b border-panel">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between gap-4 font-mono">
         {/* Brand / Logo */}
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center text-white shadow-lg shadow-indigo-500/25">
-            <Calendar className="w-5 h-5" />
+          <div className="w-10 h-10 rounded-xl bg-panel border border-accent flex items-center justify-center text-sand shadow-md">
+            <span className="text-sm font-bold text-sand">&gt;_</span>
           </div>
           <div>
             <div className="flex items-center gap-2">
-              <span className="font-bold text-base text-white tracking-tight">
-                SimpleSchedule
+              <span className="font-bold text-base text-sand tracking-tight">
+                schedule.sh
               </span>
-              <span className="text-[10px] font-semibold tracking-wider uppercase px-2 py-0.5 rounded-full bg-indigo-500/10 text-indigo-400 border border-indigo-500/20">
+              <span className="text-[10px] font-semibold tracking-wider uppercase px-2 py-0.5 rounded-md bg-panel text-sand border border-accent/60">
                 v1.0
               </span>
             </div>
-            <p className="text-xs text-slate-400 hidden sm:block">
-              Розклад занять та дисциплін
+            <p className="text-xs text-sand-muted hidden sm:block">
+              // розклад занять
             </p>
           </div>
         </div>
@@ -51,20 +50,21 @@ export const Navbar: React.FC<NavbarProps> = ({
         {/* Center: Week Selector */}
         <div className="flex items-center gap-2">
           {weeks.length > 0 ? (
-            <div className="flex items-center bg-slate-900 border border-slate-800 rounded-xl p-1 shadow-inner">
+            <div className="flex items-center bg-panel border border-accent/80 rounded-xl p-1 shadow-inner">
+              <span className="text-xs text-sand-dim pl-2 font-mono hidden sm:inline">week:</span>
               <select
                 value={activeWeekId || ''}
                 onChange={(e) => selectWeek(e.target.value)}
-                className="bg-transparent text-sm font-medium text-white px-2 py-1 pr-6 focus:outline-none cursor-pointer appearance-none"
+                className="bg-transparent text-sm font-medium text-sand px-2 py-1 pr-6 focus:outline-none cursor-pointer appearance-none"
                 style={{
-                  backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%2394a3b8'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E")`,
+                  backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%23D2C1B6'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E")`,
                   backgroundRepeat: 'no-repeat',
                   backgroundPosition: 'right 4px center',
                   backgroundSize: '16px',
                 }}
               >
                 {weeks.map((w) => (
-                  <option key={w.id} value={w.id} className="bg-slate-900 text-white">
+                  <option key={w.id} value={w.id} className="bg-canvas-deep text-sand">
                     {w.title}
                   </option>
                 ))}
@@ -73,22 +73,22 @@ export const Navbar: React.FC<NavbarProps> = ({
               <button
                 onClick={onOpenEditWeek}
                 title="Редагувати або видалити тиждень"
-                className="p-1.5 text-slate-400 hover:text-white rounded-lg hover:bg-slate-800 transition-colors ml-1"
+                className="p-1.5 text-sand-muted hover:text-sand rounded-lg hover:bg-accent/40 transition-colors ml-1"
               >
                 <Edit3 className="w-3.5 h-3.5" />
               </button>
             </div>
           ) : (
-            <div className="text-xs text-slate-400">Тижнів ще немає</div>
+            <div className="text-xs text-sand-muted">// немає тижнів</div>
           )}
 
           <button
             onClick={onOpenCreateWeek}
             title="Створити новий тиждень"
-            className="p-2 text-slate-300 hover:text-white bg-slate-900 hover:bg-slate-800 border border-slate-800 rounded-xl transition-all flex items-center gap-1.5 text-xs font-medium"
+            className="p-2 text-sand hover:text-white bg-panel hover:bg-panel-light border border-accent/80 rounded-xl transition-all flex items-center gap-1.5 text-xs font-medium"
           >
-            <Plus className="w-3.5 h-3.5 text-indigo-400" />
-            <span className="hidden md:inline">Новий тиждень</span>
+            <Plus className="w-3.5 h-3.5 text-sand" />
+            <span className="hidden md:inline">+тиждень</span>
           </button>
         </div>
 
@@ -96,30 +96,30 @@ export const Navbar: React.FC<NavbarProps> = ({
         <div className="flex items-center gap-2.5">
           <button
             onClick={onOpenTagManager}
-            className="px-3 py-2 text-xs font-medium text-slate-300 hover:text-white bg-slate-900 hover:bg-slate-800 border border-slate-800 rounded-xl transition-all flex items-center gap-1.5"
+            className="px-3 py-2 text-xs font-medium text-sand hover:text-white bg-panel hover:bg-panel-light border border-accent/80 rounded-xl transition-all flex items-center gap-1.5"
           >
-            <TagIcon className="w-3.5 h-3.5 text-purple-400" />
-            <span className="hidden sm:inline">Теги</span>
+            <TagIcon className="w-3.5 h-3.5 text-sand" />
+            <span className="hidden sm:inline">теги</span>
           </button>
 
           <a
             href="/swagger/"
             target="_blank"
             rel="noreferrer"
-            className="px-3 py-2 text-xs font-medium text-slate-400 hover:text-white bg-slate-900/50 hover:bg-slate-800 border border-slate-800/80 rounded-xl transition-all flex items-center gap-1.5"
+            className="px-3 py-2 text-xs font-medium text-sand-muted hover:text-sand bg-panel/50 hover:bg-panel border border-accent/50 rounded-xl transition-all flex items-center gap-1.5"
             title="Swagger API Documentation"
           >
-            <BookOpen className="w-3.5 h-3.5 text-slate-400" />
-            <span className="hidden lg:inline">Swagger</span>
+            <BookOpen className="w-3.5 h-3.5 text-sand-dim" />
+            <span className="hidden lg:inline">swagger</span>
           </a>
 
           {activeWeek && (
             <button
               onClick={onOpenCreateSlot}
-              className="px-3.5 py-2 text-xs sm:text-sm font-semibold text-white bg-indigo-600 hover:bg-indigo-500 rounded-xl shadow-lg shadow-indigo-600/25 transition-all flex items-center gap-1.5 active:scale-95"
+              className="px-3.5 py-2 text-xs sm:text-sm font-semibold text-canvas-deep bg-sand hover:bg-white rounded-xl shadow-md transition-all flex items-center gap-1.5 active:scale-95"
             >
-              <Plus className="w-4 h-4" />
-              <span>Додати слот</span>
+              <Plus className="w-4 h-4 text-canvas-deep stroke-[3]" />
+              <span>+слот</span>
             </button>
           )}
         </div>

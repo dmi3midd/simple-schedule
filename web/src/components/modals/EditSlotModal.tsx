@@ -78,21 +78,21 @@ export const EditSlotModal: React.FC<EditSlotModalProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm animate-fade-in">
-      <div className="bg-slate-900 border border-slate-800 rounded-2xl w-full max-w-lg p-6 shadow-2xl relative">
-        <div className="flex items-center justify-between pb-4 mb-4 border-b border-slate-800">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-canvas-deep/80 backdrop-blur-sm animate-fade-in font-mono">
+      <div className="bg-canvas border border-panel rounded-2xl w-full max-w-lg p-6 shadow-2xl relative">
+        <div className="flex items-center justify-between pb-4 mb-4 border-b border-panel">
           <div className="flex items-center gap-2.5">
-            <div className="w-8 h-8 rounded-lg bg-indigo-500/10 border border-indigo-500/30 flex items-center justify-center text-indigo-400">
+            <div className="w-8 h-8 rounded-lg bg-panel border border-accent flex items-center justify-center text-sand">
               <Edit2 className="w-5 h-5" />
             </div>
             <div>
-              <h3 className="text-lg font-bold text-white">Редагувати заняття</h3>
-              <p className="text-xs text-slate-400">Зміна параметрів слоту розкладу</p>
+              <h3 className="text-base font-bold text-sand">&gt; Редагувати заняття</h3>
+              <p className="text-xs text-sand-muted">// зміна параметрів слоту</p>
             </div>
           </div>
           <button
             onClick={onClose}
-            className="p-1.5 text-slate-400 hover:text-white rounded-lg hover:bg-slate-800 transition-colors"
+            className="p-1.5 text-sand-muted hover:text-sand rounded-lg hover:bg-panel transition-colors"
           >
             <X className="w-5 h-5" />
           </button>
@@ -101,8 +101,8 @@ export const EditSlotModal: React.FC<EditSlotModalProps> = ({
         <form onSubmit={handleSubmit} className="space-y-4">
           {/* Day of Week */}
           <div>
-            <label className="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-2">
-              День тижня
+            <label className="block text-xs font-semibold text-sand-muted uppercase tracking-wider mb-2">
+              день тижня
             </label>
             <div className="grid grid-cols-4 sm:grid-cols-7 gap-1.5">
               {DAYS_OF_WEEK.map((d) => (
@@ -112,8 +112,8 @@ export const EditSlotModal: React.FC<EditSlotModalProps> = ({
                   onClick={() => setDayOfWeek(d.id)}
                   className={`py-2 px-1 text-center text-xs font-medium rounded-lg border transition-all ${
                     dayOfWeek === d.id
-                      ? 'bg-indigo-600 text-white border-indigo-500 shadow-sm'
-                      : 'bg-slate-800/60 text-slate-400 border-slate-700/60 hover:text-white hover:bg-slate-800'
+                      ? 'bg-sand text-canvas-deep border-sand font-bold shadow-sm'
+                      : 'bg-panel/60 text-sand-muted border-accent/40 hover:text-sand hover:bg-panel'
                   }`}
                 >
                   {d.short}
@@ -124,8 +124,8 @@ export const EditSlotModal: React.FC<EditSlotModalProps> = ({
 
           {/* Activity */}
           <div>
-            <label className="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-1.5">
-              Назва дисципліни / активності
+            <label className="block text-xs font-semibold text-sand-muted uppercase tracking-wider mb-1.5">
+              дисципліна / назва
             </label>
             <input
               type="text"
@@ -133,15 +133,15 @@ export const EditSlotModal: React.FC<EditSlotModalProps> = ({
               placeholder="напр., Вища математика"
               value={activity}
               onChange={(e) => setActivity(e.target.value)}
-              className="w-full px-3.5 py-2.5 bg-slate-950 border border-slate-700 rounded-xl text-white placeholder-slate-500 focus:outline-none focus:border-indigo-500 text-sm transition-all"
+              className="w-full px-3.5 py-2.5 bg-canvas-deep border border-panel rounded-xl text-sand placeholder-sand-dim focus:outline-none focus:border-sand text-sm transition-all"
             />
           </div>
 
           {/* Presets */}
           <div>
-            <div className="flex items-center gap-1.5 text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1.5">
-              <Sparkles className="w-3.5 h-3.5 text-amber-400" />
-              <span>Швидкий вибір пари</span>
+            <div className="flex items-center gap-1.5 text-xs font-semibold text-sand-muted uppercase tracking-wider mb-1.5">
+              <Sparkles className="w-3.5 h-3.5 text-sand" />
+              <span>пресети пар</span>
             </div>
             <div className="flex flex-wrap gap-1.5">
               {PRESET_TIMES.map((preset, idx) => (
@@ -151,8 +151,8 @@ export const EditSlotModal: React.FC<EditSlotModalProps> = ({
                   onClick={() => applyPreset(preset.start, preset.end)}
                   className={`text-[11px] px-2.5 py-1 rounded-md border transition-all ${
                     startTime === preset.start && endTime === preset.end
-                      ? 'bg-indigo-950 text-indigo-300 border-indigo-700'
-                      : 'bg-slate-800/40 text-slate-400 border-slate-800 hover:text-slate-200 hover:bg-slate-800'
+                      ? 'bg-accent text-sand border-sand font-bold'
+                      : 'bg-panel/40 text-sand-muted border-panel hover:text-sand hover:bg-panel'
                   }`}
                 >
                   {preset.label}
@@ -164,35 +164,35 @@ export const EditSlotModal: React.FC<EditSlotModalProps> = ({
           {/* Times */}
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <label className="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-1.5">
-                Час початку
+              <label className="block text-xs font-semibold text-sand-muted uppercase tracking-wider mb-1.5">
+                час початку
               </label>
               <input
                 type="time"
                 required
                 value={startTime}
                 onChange={(e) => setStartTime(e.target.value)}
-                className="w-full px-3 py-2 bg-slate-950 border border-slate-700 rounded-xl text-white text-sm focus:outline-none focus:border-indigo-500"
+                className="w-full px-3 py-2 bg-canvas-deep border border-panel rounded-xl text-sand text-sm focus:outline-none focus:border-sand"
               />
             </div>
             <div>
-              <label className="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-1.5">
-                Час завершення
+              <label className="block text-xs font-semibold text-sand-muted uppercase tracking-wider mb-1.5">
+                час завершення
               </label>
               <input
                 type="time"
                 required
                 value={endTime}
                 onChange={(e) => setEndTime(e.target.value)}
-                className="w-full px-3 py-2 bg-slate-950 border border-slate-700 rounded-xl text-white text-sm focus:outline-none focus:border-indigo-500"
+                className="w-full px-3 py-2 bg-canvas-deep border border-panel rounded-xl text-sand text-sm focus:outline-none focus:border-sand"
               />
             </div>
           </div>
 
           {/* Tag */}
           <div>
-            <label className="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-1.5">
-              Тег (категорія)
+            <label className="block text-xs font-semibold text-sand-muted uppercase tracking-wider mb-1.5">
+              тег
             </label>
             <div className="flex flex-wrap gap-2">
               <button
@@ -200,8 +200,8 @@ export const EditSlotModal: React.FC<EditSlotModalProps> = ({
                 onClick={() => setSelectedTagId('')}
                 className={`text-xs px-3 py-1.5 rounded-lg border transition-all ${
                   selectedTagId === ''
-                    ? 'bg-slate-700 text-white border-slate-500'
-                    : 'bg-slate-950 text-slate-400 border-slate-800 hover:bg-slate-800'
+                    ? 'bg-sand text-canvas-deep border-sand font-bold'
+                    : 'bg-panel/40 text-sand-muted border-panel hover:bg-panel'
                 }`}
               >
                 Без тегу
@@ -215,9 +215,9 @@ export const EditSlotModal: React.FC<EditSlotModalProps> = ({
                     onClick={() => setSelectedTagId(tag.id)}
                     className="text-xs px-3 py-1.5 rounded-lg border transition-all flex items-center gap-1.5"
                     style={{
-                      backgroundColor: isSelected ? `${tag.hexColor}33` : 'rgba(2, 6, 23, 0.7)',
-                      borderColor: isSelected ? tag.hexColor : 'rgba(51, 65, 85, 0.6)',
-                      color: isSelected ? tag.hexColor : '#cbd5e1',
+                      backgroundColor: isSelected ? `${tag.hexColor}40` : 'rgba(35, 76, 106, 0.4)',
+                      borderColor: isSelected ? tag.hexColor : 'rgba(69, 104, 130, 0.5)',
+                      color: isSelected ? '#ffffff' : tag.hexColor,
                     }}
                   >
                     <span
@@ -232,18 +232,18 @@ export const EditSlotModal: React.FC<EditSlotModalProps> = ({
           </div>
 
           {/* Buttons */}
-          <div className="flex items-center justify-end gap-3 pt-4 border-t border-slate-800 mt-6">
+          <div className="flex items-center justify-end gap-3 pt-4 border-t border-panel mt-6">
             <button
               type="button"
               onClick={onClose}
-              className="px-4 py-2 text-sm text-slate-400 hover:text-white rounded-xl hover:bg-slate-800 transition-colors"
+              className="px-4 py-2 text-sm text-sand-muted hover:text-sand rounded-xl hover:bg-panel transition-colors"
             >
               Скасувати
             </button>
             <button
               type="submit"
               disabled={isSubmitting}
-              className="px-5 py-2 text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-500 disabled:opacity-50 rounded-xl shadow-lg shadow-indigo-600/30 transition-all flex items-center gap-1.5"
+              className="px-5 py-2 text-sm font-semibold text-canvas-deep bg-sand hover:bg-white disabled:opacity-50 rounded-xl shadow-md transition-all flex items-center gap-1.5"
             >
               {isSubmitting ? 'Збереження...' : 'Зберегти зміни'}
             </button>
@@ -251,5 +251,6 @@ export const EditSlotModal: React.FC<EditSlotModalProps> = ({
         </form>
       </div>
     </div>
+
   );
 };

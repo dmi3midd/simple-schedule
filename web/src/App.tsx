@@ -44,7 +44,7 @@ export const App: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col font-sans selection:bg-indigo-500 selection:text-white">
+    <div className="min-h-screen bg-canvas text-sand flex flex-col font-mono selection:bg-accent selection:text-white">
       {/* Navigation Bar */}
       <Navbar
         onOpenCreateSlot={() => {
@@ -67,16 +67,20 @@ export const App: React.FC = () => {
       </main>
 
       {/* Footer */}
-      <footer className="border-t border-slate-900 py-6 text-center text-xs text-slate-500">
+      <footer className="border-t border-panel py-5 text-center text-xs text-sand-dim bg-canvas-deep/50">
         <div className="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-2">
-          <span>SimpleSchedule &copy; 2026. Усі права захищено.</span>
-          <div className="flex items-center gap-4 text-slate-400">
-            <a href="/swagger/" target="_blank" rel="noreferrer" className="hover:text-indigo-400 transition-colors">
-              API Docs (Swagger)
+          <span className="flex items-center gap-2">
+            <span className="text-sand font-bold">&gt;_</span> SimpleSchedule &copy; 2026
+          </span>
+          <div className="flex items-center gap-4 text-sand-muted">
+            <a href="/swagger/" target="_blank" rel="noreferrer" className="hover:text-sand hover:underline transition-colors flex items-center gap-1.5">
+              <span>docs:</span>
+              <span className="text-sand">/swagger/</span>
             </a>
           </div>
         </div>
       </footer>
+
 
       {/* Modals */}
       <CreateSlotModal
