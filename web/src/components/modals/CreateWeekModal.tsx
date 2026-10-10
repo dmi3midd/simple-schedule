@@ -40,8 +40,8 @@ export const CreateWeekModal: React.FC<CreateWeekModalProps> = ({
               <Calendar className="w-5 h-5" />
             </div>
             <div>
-              <h3 className="text-base font-bold text-sand">&gt; Новий тиждень</h3>
-              <p className="text-xs text-sand-muted">// створення навчального тижня</p>
+              <h3 className="text-base font-bold text-sand">Новий тиждень</h3>
+              <p className="text-xs text-sand-muted">Створення навчального тижня</p>
             </div>
           </div>
           <button
@@ -61,7 +61,7 @@ export const CreateWeekModal: React.FC<CreateWeekModalProps> = ({
               type="text"
               required
               autoFocus
-              placeholder="напр., 1-й тиждень (Чисельник)"
+              placeholder="напр., 1-й тиждень"
               value={title}
               onChange={(e) => setTitle(e.target.value)}
               className="w-full px-3.5 py-2.5 bg-canvas-deep border border-panel rounded-xl text-sand placeholder-sand-dim focus:outline-none focus:border-sand text-sm transition-all"

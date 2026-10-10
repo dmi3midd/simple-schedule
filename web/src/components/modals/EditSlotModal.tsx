@@ -86,8 +86,8 @@ export const EditSlotModal: React.FC<EditSlotModalProps> = ({
               <Edit2 className="w-5 h-5" />
             </div>
             <div>
-              <h3 className="text-base font-bold text-sand">&gt; Редагувати заняття</h3>
-              <p className="text-xs text-sand-muted">// зміна параметрів слоту</p>
+              <h3 className="text-base font-bold text-sand">Редагувати заняття</h3>
+              <p className="text-xs text-sand-muted">Оновлення слоту</p>
             </div>
           </div>
           <button
@@ -110,11 +110,10 @@ export const EditSlotModal: React.FC<EditSlotModalProps> = ({
                   type="button"
                   key={d.id}
                   onClick={() => setDayOfWeek(d.id)}
-                  className={`py-2 px-1 text-center text-xs font-medium rounded-lg border transition-all ${
-                    dayOfWeek === d.id
+                  className={`py-2 px-1 text-center text-xs font-medium rounded-lg border transition-all ${dayOfWeek === d.id
                       ? 'bg-sand text-canvas-deep border-sand font-bold shadow-sm'
                       : 'bg-panel/60 text-sand-muted border-accent/40 hover:text-sand hover:bg-panel'
-                  }`}
+                    }`}
                 >
                   {d.short}
                 </button>
@@ -149,11 +148,10 @@ export const EditSlotModal: React.FC<EditSlotModalProps> = ({
                   type="button"
                   key={idx}
                   onClick={() => applyPreset(preset.start, preset.end)}
-                  className={`text-[11px] px-2.5 py-1 rounded-md border transition-all ${
-                    startTime === preset.start && endTime === preset.end
+                  className={`text-[11px] px-2.5 py-1 rounded-md border transition-all ${startTime === preset.start && endTime === preset.end
                       ? 'bg-accent text-sand border-sand font-bold'
                       : 'bg-panel/40 text-sand-muted border-panel hover:text-sand hover:bg-panel'
-                  }`}
+                    }`}
                 >
                   {preset.label}
                 </button>
@@ -198,11 +196,10 @@ export const EditSlotModal: React.FC<EditSlotModalProps> = ({
               <button
                 type="button"
                 onClick={() => setSelectedTagId('')}
-                className={`text-xs px-3 py-1.5 rounded-lg border transition-all ${
-                  selectedTagId === ''
+                className={`text-xs px-3 py-1.5 rounded-lg border transition-all ${selectedTagId === ''
                     ? 'bg-sand text-canvas-deep border-sand font-bold'
                     : 'bg-panel/40 text-sand-muted border-panel hover:bg-panel'
-                }`}
+                  }`}
               >
                 Без тегу
               </button>

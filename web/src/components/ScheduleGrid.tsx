@@ -5,14 +5,12 @@ import { useScheduleStore } from '../store/useScheduleStore';
 import { Plus, Calendar } from 'lucide-react';
 
 interface ScheduleGridProps {
-  onAddSlotForDay: (day: DayOfWeek) => void;
   onEditSlot: (slot: SlotWithTag) => void;
   onDeleteSlot: (id: string) => void;
   onOpenCreateWeek: () => void;
 }
 
 export const ScheduleGrid: React.FC<ScheduleGridProps> = ({
-  onAddSlotForDay,
   onEditSlot,
   onDeleteSlot,
   onOpenCreateWeek,
@@ -23,7 +21,7 @@ export const ScheduleGrid: React.FC<ScheduleGridProps> = ({
     return (
       <div className="flex flex-col items-center justify-center min-h-[60vh] gap-3 font-mono">
         <div className="w-10 h-10 border-4 border-panel border-t-sand rounded-full animate-spin" />
-        <p className="text-sm text-sand-muted">// loading schedule...</p>
+        <p className="text-sm text-sand-muted">Завантажуємо розклад...</p>
       </div>
     );
   }
@@ -34,9 +32,9 @@ export const ScheduleGrid: React.FC<ScheduleGridProps> = ({
         <div className="w-16 h-16 rounded-2xl bg-panel border border-accent flex items-center justify-center text-sand mb-4 shadow-xl">
           <Calendar className="w-8 h-8" />
         </div>
-        <h2 className="text-xl font-bold text-sand mb-2">&gt; [!] Жодного тижня не знайдено</h2>
+        <h2 className="text-xl font-bold text-sand mb-2">Жодного тижня не знайдено</h2>
         <p className="text-sm text-sand-muted max-w-md mb-6 leading-relaxed">
-          Розклад порожній. Створіть перший навчальний тиждень (наприклад: "Чисельник", "Знаменник" або "Семестр 1").
+          Розклад порожній. Створіть перший навчальний тиждень.
         </p>
         <button
           onClick={onOpenCreateWeek}
@@ -66,7 +64,7 @@ export const ScheduleGrid: React.FC<ScheduleGridProps> = ({
             )}
           </div>
           <p className="text-xs text-sand-muted mt-0.5">
-            // total slots: {activeSchedule?.slots?.length || 0}
+            Всього слотів: {activeSchedule?.slots?.length || 0}
           </p>
         </div>
       </div>
@@ -88,18 +86,10 @@ export const ScheduleGrid: React.FC<ScheduleGridProps> = ({
                   <span className="text-xs font-bold text-sand tracking-wide uppercase">
                     {day.label}
                   </span>
-                  <span className="text-[10px] font-mono px-1.5 py-0.2 rounded bg-panel text-sand-muted border border-accent/40">
-                    {slotsForDay.length}
-                  </span>
                 </div>
-
-                <button
-                  onClick={() => onAddSlotForDay(day.id)}
-                  title={`Додати слот на ${day.label}`}
-                  className="p-1 text-sand-muted hover:text-sand hover:bg-panel rounded-lg transition-colors"
-                >
-                  <Plus className="w-4 h-4" />
-                </button>
+                <span className="text-[10px] font-mono px-1.5 py-0.2 rounded bg-panel text-sand-muted border border-accent/40">
+                  {slotsForDay.length}
+                </span>
               </div>
 
               {/* Slots List */}
@@ -115,14 +105,7 @@ export const ScheduleGrid: React.FC<ScheduleGridProps> = ({
                   ))
                 ) : (
                   <div className="flex-1 flex flex-col items-center justify-center py-10 border border-dashed border-panel/80 rounded-xl text-center px-2">
-                    <p className="text-xs text-sand-dim mb-2">// empty</p>
-                    <button
-                      onClick={() => onAddSlotForDay(day.id)}
-                      className="text-xs text-sand hover:underline font-medium flex items-center gap-1"
-                    >
-                      <Plus className="w-3.5 h-3.5" />
-                      <span>додати</span>
-                    </button>
+                    <p className="text-xs text-sand-dim">Пусто</p>
                   </div>
                 )}
               </div>
@@ -132,5 +115,6 @@ export const ScheduleGrid: React.FC<ScheduleGridProps> = ({
       </div>
     </div>
   );
+
 
 };

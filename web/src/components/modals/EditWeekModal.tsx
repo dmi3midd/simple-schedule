@@ -63,8 +63,8 @@ export const EditWeekModal: React.FC<EditWeekModalProps> = ({
               <Edit2 className="w-5 h-5" />
             </div>
             <div>
-              <h3 className="text-base font-bold text-sand">&gt; Налаштування тижня</h3>
-              <p className="text-xs text-sand-muted">// зміна назви або видалення</p>
+              <h3 className="text-base font-bold text-sand">Налаштування тижня</h3>
+              <p className="text-xs text-sand-muted">Зміна назви або видалення</p>
             </div>
           </div>
           <button

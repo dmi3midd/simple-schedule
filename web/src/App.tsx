@@ -28,11 +28,6 @@ export const App: React.FC = () => {
 
   const activeWeek = weeks.find((w) => w.id === activeWeekId) || null;
 
-  const handleAddSlotForDay = (day: DayOfWeek) => {
-    setSlotDay(day);
-    setCreateSlotOpen(true);
-  };
-
   const handleEditSlot = (slot: SlotWithTag) => {
     setEditingSlot(slot);
   };
@@ -59,25 +54,16 @@ export const App: React.FC = () => {
       {/* Main Content Area */}
       <main className="flex-1">
         <ScheduleGrid
-          onAddSlotForDay={handleAddSlotForDay}
           onEditSlot={handleEditSlot}
           onDeleteSlot={handleDeleteSlot}
           onOpenCreateWeek={() => setCreateWeekOpen(true)}
         />
       </main>
 
+
       {/* Footer */}
       <footer className="border-t border-panel py-5 text-center text-xs text-sand-dim bg-canvas-deep/50">
         <div className="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-2">
-          <span className="flex items-center gap-2">
-            <span className="text-sand font-bold">&gt;_</span> SimpleSchedule &copy; 2026
-          </span>
-          <div className="flex items-center gap-4 text-sand-muted">
-            <a href="/swagger/" target="_blank" rel="noreferrer" className="hover:text-sand hover:underline transition-colors flex items-center gap-1.5">
-              <span>docs:</span>
-              <span className="text-sand">/swagger/</span>
-            </a>
-          </div>
         </div>
       </footer>
 

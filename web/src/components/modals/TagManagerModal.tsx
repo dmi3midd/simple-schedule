@@ -9,18 +9,18 @@ interface TagManagerModalProps {
 }
 
 const PRESET_COLORS = [
-  '#D2C1B6', // Sand
-  '#456882', // Accent Blue
-  '#234C6A', // Deep Blue
-  '#38bdf8', // Sky
-  '#34d399', // Emerald
-  '#a3e635', // Lime
-  '#fbbf24', // Amber
-  '#fb923c', // Orange
-  '#f87171', // Red
-  '#f472b6', // Pink
-  '#c084fc', // Purple
-  '#94a3b8', // Slate
+  '#D2C1B6',
+  '#456882',
+  '#234C6A',
+  '#38bdf8',
+  '#34d399',
+  '#a3e635',
+  '#fbbf24',
+  '#fb923c',
+  '#f87171',
+  '#f472b6',
+  '#c084fc',
+  '#94a3b8',
 ];
 
 export const TagManagerModal: React.FC<TagManagerModalProps> = ({
@@ -86,8 +86,8 @@ export const TagManagerModal: React.FC<TagManagerModalProps> = ({
               <TagIcon className="w-5 h-5" />
             </div>
             <div>
-              <h3 className="text-base font-bold text-sand">&gt; Керування тегами</h3>
-              <p className="text-xs text-sand-muted">// категорії та колірне кодування</p>
+              <h3 className="text-base font-bold text-sand">Керування тегами</h3>
+              <p className="text-xs text-sand-muted">Категорії та колірне кодування</p>
             </div>
           </div>
           <button
@@ -101,7 +101,7 @@ export const TagManagerModal: React.FC<TagManagerModalProps> = ({
         {/* Form: Create or Edit */}
         <form onSubmit={handleSubmit} className="mb-5 p-4 bg-canvas-deep border border-panel rounded-xl space-y-3 shrink-0">
           <div className="flex items-center justify-between text-xs font-semibold text-sand-muted uppercase tracking-wider">
-            <span>{editingTag ? '// редагування тегу' : '// новий тег'}</span>
+            <span>{editingTag ? 'Редагування тегу' : 'Новий тег'}</span>
             {editingTag && (
               <button
                 type="button"
@@ -144,11 +144,10 @@ export const TagManagerModal: React.FC<TagManagerModalProps> = ({
                   type="button"
                   key={color}
                   onClick={() => setHexColor(color)}
-                  className={`w-6 h-6 rounded-full border-2 transition-transform ${
-                    hexColor.toLowerCase() === color.toLowerCase()
-                      ? 'scale-125 border-white shadow-md'
-                      : 'border-transparent hover:scale-110'
-                  }`}
+                  className={`w-6 h-6 rounded-full border-2 transition-transform ${hexColor.toLowerCase() === color.toLowerCase()
+                    ? 'scale-125 border-white shadow-md'
+                    : 'border-transparent hover:scale-110'
+                    }`}
                   style={{ backgroundColor: color }}
                 />
               ))}
@@ -166,12 +165,12 @@ export const TagManagerModal: React.FC<TagManagerModalProps> = ({
         {/* Tags List */}
         <div className="flex-1 overflow-y-auto pr-1 space-y-2">
           <div className="text-xs font-semibold text-sand-muted uppercase tracking-wider mb-2">
-            список тегів ({tags.length})
+            Список тегів ({tags.length})
           </div>
 
           {tags.length === 0 ? (
             <div className="text-center py-8 text-sm text-sand-dim">
-              // тегів немає. створіть перший вище
+              Тегів немає. Створіть перший вище
             </div>
           ) : (
             tags.map((tag) => (
