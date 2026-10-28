@@ -82,21 +82,19 @@ export const ScheduleGrid: React.FC<ScheduleGridProps> = ({
         <div className="inline-flex p-1 bg-panel/80 border border-accent/40 rounded-xl">
           <button
             onClick={() => setDayFilter('first_half')}
-            className={`px-3.5 py-1.5 text-xs font-semibold rounded-lg transition-all ${
-              dayFilter === 'first_half'
+            className={`px-3.5 py-1.5 text-xs font-semibold rounded-lg transition-all ${dayFilter === 'first_half'
                 ? 'bg-sand text-canvas-deep shadow-sm'
                 : 'text-sand-muted hover:text-sand'
-            }`}
+              }`}
           >
             ПН–СР
           </button>
           <button
             onClick={() => setDayFilter('second_half')}
-            className={`px-3.5 py-1.5 text-xs font-semibold rounded-lg transition-all ${
-              dayFilter === 'second_half'
+            className={`px-3.5 py-1.5 text-xs font-semibold rounded-lg transition-all ${dayFilter === 'second_half'
                 ? 'bg-sand text-canvas-deep shadow-sm'
                 : 'text-sand-muted hover:text-sand'
-            }`}
+              }`}
           >
             ЧТ–НД
           </button>
@@ -104,11 +102,10 @@ export const ScheduleGrid: React.FC<ScheduleGridProps> = ({
       </div>
 
       {/* Grid columns: wider columns */}
-      <div className={`grid gap-4 ${
-        dayFilter === 'first_half'
+      <div className={`grid gap-4 ${dayFilter === 'first_half'
           ? 'grid-cols-1 md:grid-cols-2 lg:grid-cols-3'
           : 'grid-cols-1 md:grid-cols-2 lg:grid-cols-4'
-      }`}>
+        }`}>
         {displayedDays.map((day) => {
           const slotsForDay = (daysMap[day.id] || []).slice().sort((a, b) => a.startTime - b.startTime);
           const hasSlots = slotsForDay.length > 0;
@@ -153,6 +150,4 @@ export const ScheduleGrid: React.FC<ScheduleGridProps> = ({
       </div>
     </div>
   );
-
-
 };
